@@ -13,40 +13,37 @@ void setup()
 {
   /*Configuracion CustomV;
   inicializarConfig(CustomV);
-  SetConfig(CustomV,0,1,1,1,1,1,1);
+  SetConfig(CustomV,0,111,111,111,111,111,111);*/
 
   Serial.begin(9600);
   Configuracion customVarTest;
-  customVarTest = GetConfiguracion(0);
+  customVarTest = GetConfiguracion(1);
   Serial.println( "Estructura leida: " );
   Serial.println( customVarTest.TempMax );
   Serial.println( customVarTest.TempMin );
   Serial.println( customVarTest.HuMax );
   Serial.println( customVarTest.HuMin );
   Serial.println( customVarTest.Thora );
-  Serial.println( customVarTest.Tmin );*/
+  Serial.println( customVarTest.Tmin );
 }
- 
 void loop()
 {
 }
 
 void SetConfig(Configuracion vDat,int addres,int TempMaxS,int TempMinS,int HuMaxS,int HuMinS,int ThoraS,int TminS){
-    int eeAddress = addres;
+    int eeAddress = addres * sizeof(Configuracion);
     vDat.TempMax = TempMaxS;
     vDat.TempMin = TempMinS;
     vDat.HuMax = HuMaxS;
     vDat.HuMin = HuMinS;
     vDat.Thora = ThoraS;
     vDat.Tmin = TminS;
-    eeAddress += sizeof(Configuracion);
     EEPROM.put( eeAddress, vDat );   
 }
 
 Configuracion GetConfiguracion(int addres){
     Configuracion customVar;
-    int eeAddress = addres;
-    eeAddress += sizeof(Configuracion);
+    int eeAddress = addres * sizeof(Configuracion);
     EEPROM.get( eeAddress, customVar );  
     return customVar;
 }
