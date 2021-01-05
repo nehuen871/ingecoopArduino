@@ -17,7 +17,7 @@ void setup()
 
   Serial.begin(9600);
   Configuracion customVarTest;
-  customVarTest = GetConfiguracion(1);
+  customVarTest = GetConfiguracion(0);
   Serial.println( "Estructura leida: " );
   Serial.println( customVarTest.TempMax );
   Serial.println( customVarTest.TempMin );

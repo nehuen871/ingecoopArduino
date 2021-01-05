@@ -27,7 +27,11 @@ struct Configuracion{
    published by the Free Software Foundation; either version 2 of
    the License, or (at your option) any later version.
 */
-
+//PAGINA Principal
+NexButton buttonP0Configuracion1 = NexButton(0, 2, "b0");
+NexButton buttonP0Configuracion2 = NexButton(0, 3, "b1");
+NexButton buttonP0Configuracion3 = NexButton(0, 4, "b2");
+NexButton buttonP0Configuracion4 = NexButton(0, 5, "b3");
 
 //PAGINA 1
 NexNumber textNumber11 = NexNumber(1, 3, "x0");
@@ -147,6 +151,11 @@ char buffer[10] = {0};
 */
 NexTouch *nex_listen_list[] =
 {
+  &buttonP0Configuracion1,
+  &buttonP0Configuracion2,
+  &buttonP0Configuracion3,
+  &buttonP0Configuracion4,
+  
   &textNumber11,
   &buttonPlus11,
   &buttonMinus11,
@@ -235,27 +244,34 @@ NexTouch *nex_listen_list[] =
    Button0 component pop callback function.
    In this example,the value of the text component will plus one every time when button0 is released.
 */
+//Pagina Principal
+void buttonP0PagPrinConf1(void *ptr){
+  Configuracion ConfiguracionP1;
+  ConfiguracionP1 = GetConfiguracion(diraccionMemoria1);
+  SetValuesConfiguracion1(ConfiguracionP1);
+}
+void buttonP0PagPrinConf2(void *ptr){
+  Configuracion ConfiguracionP2;
+  ConfiguracionP2 = GetConfiguracion(diraccionMemoria2);
+  SetValuesConfiguracion2(ConfiguracionP2);
+}
+void buttonP0PagPrinConf3(void *ptr){
+  Configuracion ConfiguracionP3;
+  ConfiguracionP3 = GetConfiguracion(diraccionMemoria3);
+  SetValuesConfiguracion3(ConfiguracionP3);
+}
+void buttonP0PagPrinConf4(void *ptr){
+  Configuracion ConfiguracionP4;
+  ConfiguracionP4 = GetConfiguracion(diraccionMemoria4);
+  SetValuesConfiguracion4(ConfiguracionP4);
+}
+
 //PAGINA 1
 void buttonGuardarPushCallback1(void *ptr)
 {
   Configuracion CustomV;
   inicializarConfig(CustomV);
-  int number1 = 0;
-  int number2 = 0;
-  int number3 = 0;
-  int number4 = 0;
-  int number5 = 0;
-  int number6 = 0;
-  textNumber11.getValue(number1);
-  textNumber12.getValue(number2);
-  textNumber13.getValue(number3);
-  textNumber14.getValue(number4);
-  textNumber15.getValue(number5);
-  textNumber16.getValue(number6);
-  Serial.println( "Estructura leida: " );
-  Serial.println( number1 );
-  Serial.println( number2 );
-  SetConfig(CustomV,diraccionMemoria1,number1,number2,number3,number4,number5,number6);
+  SetConfig(CustomV,diraccionMemoria1,number11,number12,number13,number14,number15,number16);
 }
 void buttonPlusPushCallback11(void *ptr)
 {
@@ -358,19 +374,7 @@ void buttonGuardarPushCallback2(void *ptr)
 {
   Configuracion CustomV;
   inicializarConfig(CustomV);
-  int number1 = 0;
-  int number2 = 0;
-  int number3 = 0;
-  int number4 = 0;
-  int number5 = 0;
-  int number6 = 0;
-  textNumber21.getValue(number1);
-  textNumber22.getValue(number2);
-  textNumber23.getValue(number3);
-  textNumber24.getValue(number4);
-  textNumber25.getValue(number5);
-  textNumber26.getValue(number6);
-  SetConfig(CustomV,diraccionMemoria2,number1,number2,number3,number4,number5,number6);
+  SetConfig(CustomV,diraccionMemoria2,number21,number22,number23,number24,number25,number26);
 }
 void buttonPlusPushCallback21(void *ptr)
 {
@@ -473,19 +477,7 @@ void buttonGuardarPushCallback3(void *ptr)
 {
   Configuracion CustomV;
   inicializarConfig(CustomV);
-  int number1 = 0;
-  int number2 = 0;
-  int number3 = 0;
-  int number4 = 0;
-  int number5 = 0;
-  int number6 = 0;
-  textNumber31.getValue(number1);
-  textNumber32.getValue(number2);
-  textNumber33.getValue(number3);
-  textNumber34.getValue(number4);
-  textNumber35.getValue(number5);
-  textNumber36.getValue(number6);
-  SetConfig(CustomV,diraccionMemoria3,number1,number2,number3,number4,number5,number6);
+  SetConfig(CustomV,diraccionMemoria3,number31,number32,number33,number34,number35,number36);
 }
 void buttonPlusPushCallback31(void *ptr)
 {
@@ -588,19 +580,7 @@ void buttonGuardarPushCallback4(void *ptr)
 {
   Configuracion CustomV;
   inicializarConfig(CustomV);
-  int number1 = 0;
-  int number2 = 0;
-  int number3 = 0;
-  int number4 = 0;
-  int number5 = 0;
-  int number6 = 0;
-  textNumber41.getValue(number1);
-  textNumber42.getValue(number2);
-  textNumber43.getValue(number3);
-  textNumber44.getValue(number4);
-  textNumber45.getValue(number5);
-  textNumber46.getValue(number6);
-  SetConfig(CustomV,diraccionMemoria4,number1,number2,number3,number4,number5,number6);
+  SetConfig(CustomV,diraccionMemoria4,number41,number42,number43,number44,number45,number46);
 }
 void buttonPlusPushCallback41(void *ptr)
 {
@@ -705,6 +685,11 @@ void setup(void)
   nexInit();
   
   Serial.begin(9600);
+  //Pagina principal
+  buttonP0Configuracion1.attachPush(buttonP0PagPrinConf1);
+  buttonP0Configuracion2.attachPush(buttonP0PagPrinConf2);
+  buttonP0Configuracion3.attachPush(buttonP0PagPrinConf3);
+  buttonP0Configuracion4.attachPush(buttonP0PagPrinConf4);
   //PAGINA 1
   buttonGuardar1.attachPush(buttonGuardarPushCallback1);
   buttonPlus11.attachPush(buttonPlusPushCallback11);
@@ -773,60 +758,16 @@ void setup(void)
   ConfiguracionP3 = GetConfiguracion(diraccionMemoria3);
   ConfiguracionP4 = GetConfiguracion(diraccionMemoria4);
   if(ConfiguracionP1.TempMax != 0){
-    textNumber11.setValue(ConfiguracionP1.TempMax);
-    textNumber12.setValue(ConfiguracionP1.TempMin);
-    textNumber13.setValue(ConfiguracionP1.HuMax);
-    textNumber14.setValue(ConfiguracionP1.HuMin);
-    textNumber15.setValue(ConfiguracionP1.Thora);
-    textNumber16.setValue(ConfiguracionP1.Tmin);
-    number11 = ConfiguracionP1.TempMax;
-    number12 = ConfiguracionP1.TempMin;
-    number13 = ConfiguracionP1.HuMax;
-    number14 = ConfiguracionP1.HuMin;
-    number15 = ConfiguracionP1.Thora;
-    number16 = ConfiguracionP1.Tmin;
+    SetValuesConfiguracion1(ConfiguracionP1);
   }
   if(ConfiguracionP2.TempMax != 0){
-    textNumber21.setValue(ConfiguracionP2.TempMax);
-    textNumber22.setValue(ConfiguracionP2.TempMin);
-    textNumber23.setValue(ConfiguracionP2.HuMax);
-    textNumber24.setValue(ConfiguracionP2.HuMin);
-    textNumber25.setValue(ConfiguracionP2.Thora);
-    textNumber26.setValue(ConfiguracionP2.Tmin);
-    number21 = ConfiguracionP1.TempMax;
-    number22 = ConfiguracionP1.TempMin;
-    number23 = ConfiguracionP1.HuMax;
-    number24 = ConfiguracionP1.HuMin;
-    number25 = ConfiguracionP1.Thora;
-    number26 = ConfiguracionP1.Tmin;
+    SetValuesConfiguracion2(ConfiguracionP2);
   }
   if(ConfiguracionP3.TempMax != 0){
-    textNumber31.setValue(ConfiguracionP3.TempMax);
-    textNumber32.setValue(ConfiguracionP3.TempMin);
-    textNumber33.setValue(ConfiguracionP3.HuMax);
-    textNumber34.setValue(ConfiguracionP3.HuMin);
-    textNumber35.setValue(ConfiguracionP3.Thora);
-    textNumber36.setValue(ConfiguracionP3.Tmin);
-    number31 = ConfiguracionP1.TempMax;
-    number32 = ConfiguracionP1.TempMin;
-    number33 = ConfiguracionP1.HuMax;
-    number34 = ConfiguracionP1.HuMin;
-    number35 = ConfiguracionP1.Thora;
-    number36 = ConfiguracionP1.Tmin;
+    SetValuesConfiguracion3(ConfiguracionP3);
   }
   if(ConfiguracionP4.TempMax != 0){
-    textNumber41.setValue(ConfiguracionP4.TempMax);
-    textNumber42.setValue(ConfiguracionP4.TempMin);
-    textNumber43.setValue(ConfiguracionP4.HuMax);
-    textNumber44.setValue(ConfiguracionP4.HuMin);
-    textNumber45.setValue(ConfiguracionP4.Thora);
-    textNumber46.setValue(ConfiguracionP4.Tmin);
-    number41 = ConfiguracionP1.TempMax;
-    number42 = ConfiguracionP1.TempMin;
-    number43 = ConfiguracionP1.HuMax;
-    number44 = ConfiguracionP1.HuMin;
-    number45 = ConfiguracionP1.Thora;
-    number46 = ConfiguracionP1.Tmin;
+    SetValuesConfiguracion4(ConfiguracionP4);
   }
 }
 
@@ -837,6 +778,12 @@ void loop(void)
 
 void SetConfig(Configuracion vDat,int addres,int TempMaxS,int TempMinS,int HuMaxS,int HuMinS,int ThoraS,int TminS){
     int eeAddress = addres * sizeof(Configuracion);
+    Serial.println( TempMaxS );
+    Serial.println( TempMinS );
+    Serial.println( HuMaxS );
+    Serial.println( HuMinS );
+    Serial.println( ThoraS );
+    Serial.println( TminS );
     vDat.TempMax = TempMaxS;
     vDat.TempMin = TempMinS;
     vDat.HuMax = HuMaxS;
@@ -859,4 +806,64 @@ void inicializarConfig(Configuracion vDat){
     vDat.HuMin = 0;
     vDat.Thora = 0;
     vDat.Tmin = 0;
+}
+
+void SetValuesConfiguracion1(Configuracion ConfiguracionP1){
+    textNumber11.setValue(ConfiguracionP1.TempMax);
+    textNumber12.setValue(ConfiguracionP1.TempMin);
+    textNumber13.setValue(ConfiguracionP1.HuMax);
+    textNumber14.setValue(ConfiguracionP1.HuMin);
+    textNumber15.setValue(ConfiguracionP1.Thora);
+    textNumber16.setValue(ConfiguracionP1.Tmin);
+    number11 = ConfiguracionP1.TempMax;
+    number12 = ConfiguracionP1.TempMin;
+    number13 = ConfiguracionP1.HuMax;
+    number14 = ConfiguracionP1.HuMin;
+    number15 = ConfiguracionP1.Thora;
+    number16 = ConfiguracionP1.Tmin;
+}
+
+void SetValuesConfiguracion2(Configuracion ConfiguracionP2){
+    textNumber21.setValue(ConfiguracionP2.TempMax);
+    textNumber22.setValue(ConfiguracionP2.TempMin);
+    textNumber23.setValue(ConfiguracionP2.HuMax);
+    textNumber24.setValue(ConfiguracionP2.HuMin);
+    textNumber25.setValue(ConfiguracionP2.Thora);
+    textNumber26.setValue(ConfiguracionP2.Tmin);
+    number21 = ConfiguracionP2.TempMax;
+    number22 = ConfiguracionP2.TempMin;
+    number23 = ConfiguracionP2.HuMax;
+    number24 = ConfiguracionP2.HuMin;
+    number25 = ConfiguracionP2.Thora;
+    number26 = ConfiguracionP2.Tmin;
+}
+
+void SetValuesConfiguracion3(Configuracion ConfiguracionP3){
+    textNumber31.setValue(ConfiguracionP3.TempMax);
+    textNumber32.setValue(ConfiguracionP3.TempMin);
+    textNumber33.setValue(ConfiguracionP3.HuMax);
+    textNumber34.setValue(ConfiguracionP3.HuMin);
+    textNumber35.setValue(ConfiguracionP3.Thora);
+    textNumber36.setValue(ConfiguracionP3.Tmin);
+    number31 = ConfiguracionP3.TempMax;
+    number32 = ConfiguracionP3.TempMin;
+    number33 = ConfiguracionP3.HuMax;
+    number34 = ConfiguracionP3.HuMin;
+    number35 = ConfiguracionP3.Thora;
+    number36 = ConfiguracionP3.Tmin;
+}
+  
+void SetValuesConfiguracion4(Configuracion ConfiguracionP4){
+    textNumber41.setValue(ConfiguracionP4.TempMax);
+    textNumber42.setValue(ConfiguracionP4.TempMin);
+    textNumber43.setValue(ConfiguracionP4.HuMax);
+    textNumber44.setValue(ConfiguracionP4.HuMin);
+    textNumber45.setValue(ConfiguracionP4.Thora);
+    textNumber46.setValue(ConfiguracionP4.Tmin);
+    number41 = ConfiguracionP4.TempMax;
+    number42 = ConfiguracionP4.TempMin;
+    number43 = ConfiguracionP4.HuMax;
+    number44 = ConfiguracionP4.HuMin;
+    number45 = ConfiguracionP4.Thora;
+    number46 = ConfiguracionP4.Tmin;
 }
