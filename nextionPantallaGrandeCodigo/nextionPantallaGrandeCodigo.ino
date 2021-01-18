@@ -1,9 +1,13 @@
 #include <Nextion.h>
 #include <EEPROM.h>
+#include <Wire.h>    // incluye libreria para interfaz I2C
+#include <RTClib.h>   // incluye libreria para el manejo del modulo RTC
+
 #define diraccionMemoria1 0
 #define diraccionMemoria2 1
 #define diraccionMemoria3 2
 #define diraccionMemoria4 3
+
 struct Configuracion{
   int TempMax;
   int TempMin;
@@ -12,6 +16,8 @@ struct Configuracion{
   int Thora;
   int Tmin;
 };
+
+RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 /**
    @example CompText.ino
    @par How to Use
@@ -386,7 +392,7 @@ void buttonPlusPushCallback21(void *ptr)
 
 void buttonMinusPushCallback21(void *ptr)
 {
-  if (number21 > 0) number22 -= 1;
+  if (number21 > 0) number21 -= 1;
   memset(buffer, 0, sizeof(buffer));  // clear buffer
   itoa(number21, buffer, 10);
   textNumber21.setValue(number21);
@@ -489,7 +495,7 @@ void buttonPlusPushCallback31(void *ptr)
 
 void buttonMinusPushCallback31(void *ptr)
 {
-  if (number31 > 0) number33 -= 1;
+  if (number31 > 0) number31 -= 1;
   memset(buffer, 0, sizeof(buffer));  // clear buffer
   itoa(number31, buffer, 10);
   textNumber31.setValue(number31);
@@ -592,7 +598,7 @@ void buttonPlusPushCallback41(void *ptr)
 
 void buttonMinusPushCallback41(void *ptr)
 {
-  if (number41 > 0) number44 -= 1;
+  if (number41 > 0) number41 -= 1;
   memset(buffer, 0, sizeof(buffer));  // clear buffer
   itoa(number41, buffer, 10);
   textNumber41.setValue(number41);
@@ -686,6 +692,7 @@ void setup(void)
   
   Serial.begin(9600);
   //Pagina principal
+  pinMode(3,INPUT);//FINAL DE CARRERA
   buttonP0Configuracion1.attachPush(buttonP0PagPrinConf1);
   buttonP0Configuracion2.attachPush(buttonP0PagPrinConf2);
   buttonP0Configuracion3.attachPush(buttonP0PagPrinConf3);
@@ -769,11 +776,34 @@ void setup(void)
   if(ConfiguracionP4.TempMax != 0){
     SetValuesConfiguracion4(ConfiguracionP4);
   }
+
+  if (! rtc.begin()) {       // si falla la inicializacion del modulo
+  Serial.println("Modulo RTC no encontrado !");  // muestra mensaje de error
+    while (1);         // bucle infinito que detiene ejecucion del programa
+  }
+  //rtc.adjust(DateTime(__DATE__, __TIME__));  // funcion que permite establecer fecha y horario
 }
 
 void loop(void)
 {
+  DateTime fecha = rtc.now();      // funcion que devuelve fecha y horario en formato
+  /*Serial.print(fecha.day());     // funcion que obtiene el dia de la fecha completa
+  Serial.print("/");       // caracter barra como separador
+  Serial.print(fecha.month());     // funcion que obtiene el mes de la fecha completa
+  Serial.print("/");       // caracter barra como separador
+  Serial.print(fecha.year());      // funcion que obtiene el año de la fecha completa
+  Serial.print(" ");       // caracter espacio en blanco como separador
+  Serial.print(fecha.hour());      // funcion que obtiene la hora de la fecha completa
+  Serial.print(":");       // caracter dos puntos como separador
+  Serial.print(fecha.minute());      // funcion que obtiene los minutos de la fecha completa
+  Serial.print(":");       // caracter dos puntos como separador
+  Serial.println(fecha.second());*/ 
   nexLoop(nex_listen_list);
+  /*if(digitalRead(3) == LOW){
+    Serial.println("FUNCIONA");
+  }else{
+    Serial.println("NO FUNCIONA");
+  }*/
 }
 
 void SetConfig(Configuracion vDat,int addres,int TempMaxS,int TempMinS,int HuMaxS,int HuMinS,int ThoraS,int TminS){

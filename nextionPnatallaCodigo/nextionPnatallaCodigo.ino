@@ -20,7 +20,7 @@
 //PAGINA 1
 NexNumber textNumber11 = NexNumber(1, 5, "x0");
 NexButton buttonPlus11 = NexButton(1, 4, "b2");
-NexButton buttonMinus11 = NexButton(1, 6, "b3");
+NexButton buttonMinus11 = NexButton(1, 5, "b3");
 NexNumber textNumber12 = NexNumber(1, 9, "x1");
 NexButton buttonPlus12 = NexButton(1, 8, "b4");
 NexButton buttonMinus12 = NexButton(1, 10, "b5");
@@ -40,7 +40,7 @@ NexButton buttonMinus16 = NexButton(1, 23, "b1");
 //PAGINA 2
 NexNumber textNumber21 = NexNumber(2, 5, "x0");
 NexButton buttonPlus21 = NexButton(2, 4, "b2");
-NexButton buttonMinus21 = NexButton(2, 6, "b3");
+NexButton buttonMinus21 = NexButton(2, 5, "b3");
 NexNumber textNumber22 = NexNumber(2, 9, "x1");
 NexButton buttonPlus22 = NexButton(2, 8, "b4");
 NexButton buttonMinus22 = NexButton(2, 10, "b5");
@@ -60,7 +60,7 @@ NexButton buttonMinus26 = NexButton(2, 23, "b1");
 //PAGINA 3
 NexNumber textNumber31 = NexNumber(3, 5, "x0");
 NexButton buttonPlus31 = NexButton(3, 4, "b2");
-NexButton buttonMinus31 = NexButton(3, 6, "b3");
+NexButton buttonMinus31 = NexButton(3, 5, "b3");
 NexNumber textNumber32 = NexNumber(3, 9, "x1");
 NexButton buttonPlus32 = NexButton(3, 8, "b4");
 NexButton buttonMinus32 = NexButton(3, 10, "b5");
@@ -80,7 +80,7 @@ NexButton buttonMinus36 = NexButton(3, 23, "b1");
 //PAGINA 4
 NexNumber textNumber41 = NexNumber(4, 5, "x0");
 NexButton buttonPlus41 = NexButton(4, 4, "b2");
-NexButton buttonMinus41 = NexButton(4, 6, "b3");
+NexButton buttonMinus41 = NexButton(4, 5, "b3");
 NexNumber textNumber42 = NexNumber(4, 9, "x1");
 NexButton buttonPlus42 = NexButton(4, 8, "b4");
 NexButton buttonMinus42 = NexButton(4, 10, "b5");

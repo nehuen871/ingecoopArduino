@@ -1,3 +1,6 @@
+//https://programarfacil.com/blog/arduino-blog/reloj-con-arduino-rtc/
+//ARduino mega puertos Arduino MEGA, DUE -> SDA = 20 y SCL = 21
+
 #include <Wire.h>    // incluye libreria para interfaz I2C
 #include <RTClib.h>   // incluye libreria para el manejo del modulo RTC
 

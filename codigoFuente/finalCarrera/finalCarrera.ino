@@ -1,10 +1,10 @@
 void setup() {
   Serial.begin(9600);  
-  pinMode(0,INPUT);
+  pinMode(3,INPUT);
 }
 
 void loop() {
-  if(digitalRead(0) == LOW){
+  if(digitalRead(3) == LOW){
     Serial.println("FUNCIONA");
   }else{
     Serial.println("NO FUNCIONA");
