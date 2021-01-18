@@ -2,6 +2,12 @@
 #include <EEPROM.h>
 #include <Wire.h>    // incluye libreria para interfaz I2C
 #include <RTClib.h>   // incluye libreria para el manejo del modulo RTC
+#include <DHT.h>
+
+// Definimos el pin digital donde se conecta el sensor
+#define DHTPIN 2
+// Dependiendo del tipo de sensor
+#define DHTTYPE DHT11
 
 #define diraccionMemoria1 0
 #define diraccionMemoria2 1
@@ -16,7 +22,8 @@ struct Configuracion{
   int Thora;
   int Tmin;
 };
-
+// Inicializamos el sensor DHT11
+DHT dht(DHTPIN, DHTTYPE);
 RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 /**
    @example CompText.ino
@@ -781,6 +788,7 @@ void setup(void)
   Serial.println("Modulo RTC no encontrado !");  // muestra mensaje de error
     while (1);         // bucle infinito que detiene ejecucion del programa
   }
+  dht.begin();
   //rtc.adjust(DateTime(__DATE__, __TIME__));  // funcion que permite establecer fecha y horario
 }
 
@@ -896,4 +904,26 @@ void SetValuesConfiguracion4(Configuracion ConfiguracionP4){
     number44 = ConfiguracionP4.HuMin;
     number45 = ConfiguracionP4.Thora;
     number46 = ConfiguracionP4.Tmin;
+}
+
+int calcularTempYHumedad(){
+  delay(5000);
+ 
+  // Leemos la humedad relativa
+  float h = dht.readHumidity();
+  // Leemos la temperatura en grados centígrados (por defecto)
+  float t = dht.readTemperature();
+  // Leemos la temperatura en grados Fahreheit
+  float f = dht.readTemperature(true);
+ 
+  // Comprobamos si ha habido algún error en la lectura
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println("Error obteniendo los datos del sensor DHT11");
+    return;
+  }
+ 
+  // Calcular el índice de calor en Fahreheit
+  float hif = dht.computeHeatIndex(f, h);
+  // Calcular el índice de calor en grados centígrados
+  float hic = dht.computeHeatIndex(t, h, false);  
 }

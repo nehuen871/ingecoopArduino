@@ -1,4 +1,5 @@
 // Incluimos librería
+//https://programarfacil.com/blog/arduino-blog/sensor-dht11-temperatura-humedad-arduino/
 //izquierda a derecha leyendo lo que dice los pines son 1 vcc  2 señal 3 sin cable 4 ground
 #include <DHT.h>
  
