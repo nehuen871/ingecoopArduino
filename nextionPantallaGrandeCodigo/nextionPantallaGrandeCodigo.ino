@@ -7,12 +7,17 @@
 // Definimos el pin digital donde se conecta el sensor
 #define DHTPIN 2
 // Dependiendo del tipo de sensor
-#define DHTTYPE DHT11
+#define DHTTYPE DHT22 
 
 #define diraccionMemoria1 0
 #define diraccionMemoria2 1
 #define diraccionMemoria3 2
 #define diraccionMemoria4 3
+
+struct HumTemp{
+  float temp;
+  float hum;
+};
 
 struct Configuracion{
   int TempMax;
@@ -22,9 +27,19 @@ struct Configuracion{
   int Thora;
   int Tmin;
 };
+int finalCarrera = 3;
+int ventilador1 = 4;
+int ventilador2 = 5;
+int resistencia1 = 6;
+int resistencia2 = 7;
 // Inicializamos el sensor DHT11
 DHT dht(DHTPIN, DHTTYPE);
 RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
+
+int horaInicio = 0;
+int minutoInicio = 0;
+
+int flagConfig = 0;
 /**
    @example CompText.ino
    @par How to Use
@@ -66,7 +81,7 @@ NexNumber textNumber16 = NexNumber(1, 28, "n1");
 NexButton buttonPlus16 = NexButton(1, 25, "b12");
 NexButton buttonMinus16 = NexButton(1, 26, "b1");
 NexButton buttonGuardar1 = NexButton(1, 19, "b13");
-
+NexButton buttonInicioPrograma1 = NexButton(1,20,"bt0");
 //PAGINA 2
 NexNumber textNumber21 = NexNumber(2, 3, "x0");
 NexButton buttonPlus21 = NexButton(2, 4, "b2");
@@ -168,6 +183,8 @@ NexTouch *nex_listen_list[] =
   &buttonP0Configuracion2,
   &buttonP0Configuracion3,
   &buttonP0Configuracion4,
+
+  &buttonInicioPrograma1,
   
   &textNumber11,
   &buttonPlus11,
@@ -280,6 +297,16 @@ void buttonP0PagPrinConf4(void *ptr){
 }
 
 //PAGINA 1
+void buttonIniciar1(void *ptr){
+  if(digitalRead(finalCarrera) == LOW){
+    DateTime fecha = rtc.now();      // funcion que devuelve fecha y horario en formato
+    horaInicio = fecha.hour();
+    minutoInicio = fecha.minute();
+    flagConfig = 1; //FLAG QUE HACE QUE EMPIECE A FUNCIONAR LA EL PROGRAMA1
+  }else{
+    Serial.println("NO FUNCIONA");
+  }
+}
 void buttonGuardarPushCallback1(void *ptr)
 {
   Configuracion CustomV;
@@ -706,6 +733,7 @@ void setup(void)
   buttonP0Configuracion4.attachPush(buttonP0PagPrinConf4);
   //PAGINA 1
   buttonGuardar1.attachPush(buttonGuardarPushCallback1);
+  buttonInicioPrograma1.attachPush(buttonIniciar1);
   buttonPlus11.attachPush(buttonPlusPushCallback11);
   buttonMinus11.attachPush(buttonMinusPushCallback11);
   buttonPlus12.attachPush(buttonPlusPushCallback12);
@@ -718,6 +746,7 @@ void setup(void)
   buttonMinus15.attachPush(buttonMinusPushCallback15);
   buttonPlus16.attachPush(buttonPlusPushCallback16);
   buttonMinus16.attachPush(buttonMinusPushCallback16);
+  
   //PAGINA2
   buttonGuardar2.attachPush(buttonGuardarPushCallback2);
   buttonPlus21.attachPush(buttonPlusPushCallback21);
@@ -795,18 +824,37 @@ void setup(void)
 void loop(void)
 {
   DateTime fecha = rtc.now();      // funcion que devuelve fecha y horario en formato
-  /*Serial.print(fecha.day());     // funcion que obtiene el dia de la fecha completa
-  Serial.print("/");       // caracter barra como separador
-  Serial.print(fecha.month());     // funcion que obtiene el mes de la fecha completa
-  Serial.print("/");       // caracter barra como separador
-  Serial.print(fecha.year());      // funcion que obtiene el año de la fecha completa
-  Serial.print(" ");       // caracter espacio en blanco como separador
-  Serial.print(fecha.hour());      // funcion que obtiene la hora de la fecha completa
-  Serial.print(":");       // caracter dos puntos como separador
-  Serial.print(fecha.minute());      // funcion que obtiene los minutos de la fecha completa
-  Serial.print(":");       // caracter dos puntos como separador
-  Serial.println(fecha.second());*/ 
   nexLoop(nex_listen_list);
+  switch(flagConfig) {
+  case 1:
+    // code block
+    if(digitalRead(finalCarrera) == LOW){
+      Configuracion HumTempValueSave;
+      HumTemp HumedadYTempreaturaMedicion;
+      HumTempValueSave = GetConfiguracion(0);
+      calcularTempYHumedad(HumedadYTempreaturaMedicion);
+      EmpezarTrabajo(HumTempValueSave,HumedadYTempreaturaMedicion,fecha);
+    }
+    break;
+  case 2:
+    // code block
+    if(digitalRead(finalCarrera) == LOW){}
+    flagConfig = 0;
+    break;
+  case 3:
+    // code block
+    if(digitalRead(finalCarrera) == LOW){}
+    flagConfig = 0;
+    break;
+  case 4:
+    // code block
+    if(digitalRead(finalCarrera) == LOW){}
+    flagConfig = 0;
+    break;
+  default:
+    flagConfig = 0;
+    // code block
+  }
   /*if(digitalRead(3) == LOW){
     Serial.println("FUNCIONA");
   }else{
@@ -905,25 +953,59 @@ void SetValuesConfiguracion4(Configuracion ConfiguracionP4){
     number45 = ConfiguracionP4.Thora;
     number46 = ConfiguracionP4.Tmin;
 }
+void EmpezarTrabajo(Configuracion HumTempValueSave,HumTemp HumedadYTempreaturaMedicion,DateTime fecha){
 
-int calcularTempYHumedad(){
-  delay(5000);
- 
-  // Leemos la humedad relativa
+}
+void calcularTempYHumedad(HumTemp DatV){
+  // Wait a few seconds between measurements.
+  delay(2000);
+
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
-  // Leemos la temperatura en grados centígrados (por defecto)
+  // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
-  // Leemos la temperatura en grados Fahreheit
-  float f = dht.readTemperature(true);
- 
-  // Comprobamos si ha habido algún error en la lectura
-  if (isnan(h) || isnan(t) || isnan(f)) {
-    Serial.println("Error obteniendo los datos del sensor DHT11");
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+  //float f = dht.readTemperature(true);
+  DatV.temp = t;
+  DatV.hum = h;
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(h) || isnan(t) /*|| isnan(f)*/) {
+    Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
- 
-  // Calcular el índice de calor en Fahreheit
-  float hif = dht.computeHeatIndex(f, h);
-  // Calcular el índice de calor en grados centígrados
-  float hic = dht.computeHeatIndex(t, h, false);  
+
+  // Compute heat index in Fahrenheit (the default)
+  //float hif = dht.computeHeatIndex(f, h);
+  // Compute heat index in Celsius (isFahreheit = false)
+  //float hic = dht.computeHeatIndex(t, h, false);
+}
+
+void ventilador1OnOff(int flag){
+  if(flag != 0){
+    digitalWrite(ventilador1, HIGH);
+  }else{
+    digitalWrite(ventilador1, LOW);
+  }
+}
+void ventilador2OnOff(int flag){
+  if(flag != 0){
+    digitalWrite(ventilador2, HIGH);
+  }else{
+    digitalWrite(ventilador2, LOW);
+  }
+}
+void resistencia1OnOff(int flag){
+  if(flag != 0){
+    digitalWrite(resistencia1, HIGH);
+  }else{
+    digitalWrite(resistencia1, LOW);
+  }
+}
+void resistencia2OnOff(int flag){
+  if(flag != 0){
+    digitalWrite(resistencia2, HIGH);
+  }else{
+    digitalWrite(resistencia2, LOW);
+  }
 }
