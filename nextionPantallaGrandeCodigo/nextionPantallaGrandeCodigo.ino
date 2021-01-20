@@ -40,6 +40,8 @@ int horaInicio = 0;
 int minutoInicio = 0;
 
 int flagConfig = 0;
+int contadorHum = 0;
+int contadorTemp = 0;
 /**
    @example CompText.ino
    @par How to Use
@@ -824,6 +826,8 @@ void setup(void)
 void loop(void)
 {
   DateTime fecha = rtc.now();      // funcion que devuelve fecha y horario en formato
+  int hora = fecha.hour();
+  int minuto = fecha.minute();
   nexLoop(nex_listen_list);
   switch(flagConfig) {
   case 1:
@@ -833,7 +837,46 @@ void loop(void)
       HumTemp HumedadYTempreaturaMedicion;
       HumTempValueSave = GetConfiguracion(0);
       calcularTempYHumedad(HumedadYTempreaturaMedicion);
-      EmpezarTrabajo(HumTempValueSave,HumedadYTempreaturaMedicion,fecha);
+      int horaFinal = horaInicio + HumTempValueSave.Thora;
+      int minutoFinal = minutoInicio + HumTempValueSave.Tmin;
+      int mostarHora = minutoFinal - hora;
+      int mostrarMin = minutoFinal - minuto;
+      
+      String temperaturaS;
+      temperaturaS = String(HumedadYTempreaturaMedicion.temp);
+      temperaturaS.remove(2,1);
+
+      String HumedadS;
+      HumedadS = String(HumedadYTempreaturaMedicion.hum);
+      HumedadS.remove(2,1);
+      
+      int temperaturaNoFloat = temperaturaS.toInt();
+      int humedadNoFloat = HumedadS.toInt();
+      Serial.print("page1.n0.val=");
+      Serial.print(mostarHora);
+      Serial.write(0xff); 
+      Serial.print("page1.n1.val=");
+      Serial.print(mostrarMin);
+      Serial.write(0xff); 
+      Serial.print("page1.x0.val=");
+      Serial.print(humedadNoFloat);
+      Serial.write(0xff); 
+      Serial.print("page1.x1.val=");
+      Serial.print(temperaturaNoFloat);
+      Serial.write(0xff); 
+      if(comprarHumYTem(HumedadYTempreaturaMedicion,HumTempValueSave)){
+        mantenerTemp(HumTempValueSave,HumedadYTempreaturaMedicion);
+        mantenerHum(HumTempValueSave,HumedadYTempreaturaMedicion);
+      }else{
+        correccionTemp(HumedadYTempreaturaMedicion,HumTempValueSave);
+        correccionHum(HumedadYTempreaturaMedicion,HumTempValueSave);
+      }
+      
+      if(hora == horaFinal && minuto == minutoFinal ){
+        flagConfig = 0;
+      }
+    }else{
+      flagConfig = 0;
     }
     break;
   case 2:
@@ -862,6 +905,47 @@ void loop(void)
   }*/
 }
 
+void mantenerTemp(Configuracion HumTempValueSave,HumTemp HumedadYTempreaturaMedicion){
+  //apagarTodo
+}
+void mantenerHum(Configuracion HumTempValueSave,HumTemp HumedadYTempreaturaMedicion){
+  //apagarTodo
+}
+void correccionTemp(HumTemp HumedadYTempreaturaMedicion,Configuracion HumTempValueSave){
+    if(HumedadYTempreaturaMedicion.temp < HumTempValueSave.TempMax){
+      //apagarVentilador
+    }else if(HumedadYTempreaturaMedicion.temp < HumTempValueSave.TempMin){
+      //prnderVentilador
+    }
+}
+void correccionHum(HumTemp HumedadYTempreaturaMedicion,Configuracion HumTempValueSave){
+    if(HumedadYTempreaturaMedicion.hum < HumTempValueSave.HuMax){
+      //apagarVentilador
+    }else if(HumedadYTempreaturaMedicion.hum < HumTempValueSave.HuMin){
+      //prnderVentilador
+    }
+}
+
+int comprarHumYTem(HumTemp HumedadYTempreaturaMedicion,Configuracion HumTempValueSave){
+  
+  if(HumedadYTempreaturaMedicion.temp < HumTempValueSave.TempMin && HumedadYTempreaturaMedicion.temp > HumTempValueSave.TempMax){
+    if(contadorTemp != 5 && contadorTemp < 6){
+      contadorTemp++;
+    }
+  }else{
+    contadorTemp = 0;
+  }
+  if(HumedadYTempreaturaMedicion.hum < HumTempValueSave.HuMin && HumedadYTempreaturaMedicion.hum > HumTempValueSave.HuMax){
+    if(contadorHum != 5 && contadorHum < 6){
+      contadorHum++;
+    }
+  }else{
+    contadorHum = 0;
+  }
+  if(contadorTemp == 5 && contadorHum == 5){
+    return 1;
+  }
+}
 void SetConfig(Configuracion vDat,int addres,int TempMaxS,int TempMinS,int HuMaxS,int HuMinS,int ThoraS,int TminS){
     int eeAddress = addres * sizeof(Configuracion);
     Serial.println( TempMaxS );
@@ -953,9 +1037,7 @@ void SetValuesConfiguracion4(Configuracion ConfiguracionP4){
     number45 = ConfiguracionP4.Thora;
     number46 = ConfiguracionP4.Tmin;
 }
-void EmpezarTrabajo(Configuracion HumTempValueSave,HumTemp HumedadYTempreaturaMedicion,DateTime fecha){
 
-}
 void calcularTempYHumedad(HumTemp DatV){
   // Wait a few seconds between measurements.
   delay(2000);
