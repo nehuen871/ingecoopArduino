@@ -15,9 +15,9 @@
 #define diraccionMemoria4 3
 int in1 = A0;
 int in11 = A1;
-char *ssid;
-char *password;
-char response[20];
+String ssid;
+String password;
+String response;
 int number46 = 0;
 struct HumTemp{
   float temp;
@@ -61,11 +61,11 @@ void buttonP0PagPrinConf1(void *ptr){
   TextPass.getText(PassCh, 10);
   //ssid = userCh;
   //password = PassCh;
+  response = "";
   ssid = "Ingecoop";
   password = "1ng3c00p686";
-  strcat(response, ssid);
-  strcat(response, "/");
-  strcat(response, password);
+  response = ssid + "/" + password;
+
 }
 
 void setup() {
@@ -105,8 +105,9 @@ void receiveEvent(int howMany) {
 
 // function that executes whenever data is requested from master
 void requestEvent() {
-  Serial.print(response);
-  Wire.write(response);  /*send string on request */
+  char resp[26];
+  response.toCharArray(resp, 26);
+  Wire.write(resp);  /*send string on request */
 }
 
 

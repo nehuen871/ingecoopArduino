@@ -7,39 +7,9 @@ WiFiServer server(80);
 
 void setup() {
   Serial.begin(9600);
-  delay(10);
-
-  //Configuración  del GPIO2
   pinMode(2, OUTPUT);
   digitalWrite(2,LOW);
-  
-   Wire.begin(D1, D2); /* join i2c bus with SDA=D1 and SCL=D2 of NodeMCU */
-   
-  Serial.println();
-  Serial.println();
-  Serial.print("Conectandose a red : ");
-  Serial.println(ssid);
-  
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-     Wire.requestFrom(8, 20);
-    char response = Wire.read();
-    Serial.print(response);
-    //Split(response);
-    //Conexión a la red
-     //WiFi.begin(ssid, password);
-  }
-  Serial.println("");
-  Serial.println("WiFi conectado");
-  
-  
-  server.begin(); //Iniciamos el servidor
-  Serial.println("Servidor Iniciado");
-
-
-  Serial.println("Ingrese desde un navegador web usando la siguiente IP:");
-  Serial.println(WiFi.localIP()); //Obtenemos la IP
+  Wire.begin(D1, D2); /* join i2c bus with SDA=D1 and SCL=D2 of NodeMCU */
 }
 
 void loop() {
@@ -103,20 +73,25 @@ void loop() {
     Serial.println("respuesta enviada");
     Serial.println();
 
+  }else{
+     WiFi.begin(ssid, password); //Conexión a la red
+     server.begin(); //Iniciamos el servidor
+     Wire.requestFrom(8, 20); /* request & read data of size 13 from slave */
+     String a = "";
+     int flag = 0;
+     while(Wire.available()){
+        char c = Wire.read();
+        a += c;
+     }
+          int ind1 = a.indexOf('/');
+          String ssidS = a.substring(0, ind1);
+          String passwordS = a.substring(ind1+1);
+          ssidS.toCharArray(ssid, 10);
+          passwordS.toCharArray(password, 10);
+
+     Serial.println(a);
+     Serial.println(ssid);
+     Serial.println(password);
+     delay(1000);
   }
 }
-
- void Split(char*  e) {
-  char* v[3];
-  char *p;
-  int i = 0;
-  p = strtok(e, "/");
-  while(p && i < 3)
-   {
-    v[i] = p;
-    p = strtok(NULL, "/");
-    i++;
-  };
-  ssid = v[0];
-  password = v[1];
- };
