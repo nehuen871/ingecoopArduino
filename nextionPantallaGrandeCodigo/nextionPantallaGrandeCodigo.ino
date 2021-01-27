@@ -948,12 +948,6 @@ int comprarHumYTem(HumTemp HumedadYTempreaturaMedicion,Configuracion HumTempValu
 }
 void SetConfig(Configuracion vDat,int addres,int TempMaxS,int TempMinS,int HuMaxS,int HuMinS,int ThoraS,int TminS){
     int eeAddress = addres * sizeof(Configuracion);
-    Serial.println( TempMaxS );
-    Serial.println( TempMinS );
-    Serial.println( HuMaxS );
-    Serial.println( HuMinS );
-    Serial.println( ThoraS );
-    Serial.println( TminS );
     vDat.TempMax = TempMaxS;
     vDat.TempMin = TempMinS;
     vDat.HuMax = HuMaxS;
@@ -1053,7 +1047,7 @@ void calcularTempYHumedad(HumTemp DatV){
   DatV.hum = h;
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t) /*|| isnan(f)*/) {
-    Serial.println(F("Failed to read from DHT sensor!"));
+    //Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
 
