@@ -17,6 +17,7 @@ int in1 = A0;
 int in11 = A1;
 String ssid;
 String password;
+String separador = "/";
 String response;
 int number46 = 0;
 struct HumTemp{
@@ -64,8 +65,12 @@ void buttonP0PagPrinConf1(void *ptr){
   response = "";
   ssid = "Ingecoop";
   password = "1ng3c00p686";
-  response = ssid + "/" + password;
-
+  response += ssid + separador + password;
+  if(response.length() < 25){
+    for(int i=response.length();i<25;i++){
+      response+="/"; 
+    }
+  }
 }
 
 void setup() {
@@ -105,8 +110,8 @@ void receiveEvent(int howMany) {
 
 // function that executes whenever data is requested from master
 void requestEvent() {
-  char resp[26];
-  response.toCharArray(resp, 26);
+  char resp[response.length()];
+  response.toCharArray(resp,response.length()+1);
   Wire.write(resp);  /*send string on request */
 }
 

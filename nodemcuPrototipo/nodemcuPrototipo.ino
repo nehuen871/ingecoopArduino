@@ -7,6 +7,7 @@ WiFiServer server(80);
 
 void setup() {
   Serial.begin(9600);
+  delay(10);
   pinMode(2, OUTPUT);
   digitalWrite(2,LOW);
   Wire.begin(D1, D2); /* join i2c bus with SDA=D1 and SCL=D2 of NodeMCU */
@@ -74,24 +75,52 @@ void loop() {
     Serial.println();
 
   }else{
-     WiFi.begin(ssid, password); //Conexión a la red
-     server.begin(); //Iniciamos el servidor
-     Wire.requestFrom(8, 20); /* request & read data of size 13 from slave */
-     String a = "";
-     int flag = 0;
-     while(Wire.available()){
-        char c = Wire.read();
-        a += c;
+    String user;
+    String pass;
+    WiFi.begin(user, pass); 
+    delay(3000);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+      
+      delay(500);
+       Wire.requestFrom(8, 24); /* request & read data of size 13 from slave */
+       String a = "";
+       while(Wire.available()){
+          char c = Wire.read();
+          a += c;
+       }
+       user = getValue(a, '/', 0);
+       pass = getValue(a, '/', 1);
+       //pass.remove(11);
+       Serial.println("User");
+       Serial.println(user);
+       Serial.println("Pass");
+       Serial.println(pass);
+       WiFi.begin(user, pass); //Conexión a la red
+       delay(3000);
+       server.begin(); //Iniciamos el servidor
+       Serial.println(WiFi.localIP()); //Obtenemos la IP
+       delay(3000);
      }
-          int ind1 = a.indexOf('/');
-          String ssidS = a.substring(0, ind1);
-          String passwordS = a.substring(ind1+1);
-          ssidS.toCharArray(ssid, 10);
-          passwordS.toCharArray(password, 10);
-
-     Serial.println(a);
-     Serial.println(ssid);
-     Serial.println(password);
-     delay(1000);
+     server.begin();
+     delay(3000);
   }
+}
+
+
+ String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
