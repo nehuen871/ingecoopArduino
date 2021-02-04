@@ -18,6 +18,12 @@ void loop() {
   WiFiClient client = server.available();
   if (client) //Si hay un cliente presente
   { 
+    Wire.requestFrom(8, 24); /* request & read data of size 13 from slave */
+    String a = "";
+    while(Wire.available()){
+      char c = Wire.read();
+      a += c;
+    }
     Serial.println("Nuevo Cliente");
     
     //esperamos hasta que hayan datos disponibles
