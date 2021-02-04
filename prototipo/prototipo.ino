@@ -91,7 +91,7 @@ void buttonP0PagPrinConf1(void *ptr){
 }
 
 void buttonP0PagPrinConfOlvidar(void *ptr){
-  response = "";
+  CharsEnviar->WifiOlvidar = "0";
 }
 
 void setup() {
@@ -131,6 +131,7 @@ void requestEvent() {
   response = "";
   response += CharsEnviar->ssid + "/";
   response += CharsEnviar->pass + "/";
+  response += CharsEnviar->WifiOlvidar+ "/";
   if(response.length() < MaxCharsEnviados){
     for(int i=response.length();i<MaxCharsEnviados;i++){
       response+="/"; 
