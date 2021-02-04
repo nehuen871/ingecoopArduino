@@ -75,33 +75,45 @@ void loop() {
     Serial.println();
 
   }else{
+    int i=0;
     String user;
     String pass;
     WiFi.begin(user, pass); 
     delay(3000);
     while (WiFi.status() != WL_CONNECTED)
     {
-      
+      i++;
+      if(i>5){
+        i=0;
+      }
+      Wire.beginTransmission(8); /* begin with device address 8 */
+      Wire.write(i);  /* sends hello string */
+      Wire.endTransmission();    /* stop transmitting */
+      Serial.println();
       delay(500);
-       Wire.requestFrom(8, 24); /* request & read data of size 13 from slave */
-       String a = "";
-       while(Wire.available()){
-          char c = Wire.read();
-          a += c;
-       }
-       user = getValue(a, '/', 0);
-       pass = getValue(a, '/', 1);
-       //pass.remove(11);
-       Serial.println("User");
-       Serial.println(user);
-       Serial.println("Pass");
-       Serial.println(pass);
-       WiFi.begin(user, pass); //Conexión a la red
-       delay(3000);
-       server.begin(); //Iniciamos el servidor
-       Serial.println(WiFi.localIP()); //Obtenemos la IP
-       delay(3000);
+      Wire.requestFrom(8, 24); /* request & read data of size 13 from slave */
+      String a = "";
+      while(Wire.available()){
+        char c = Wire.read();
+        a += c;
+      }
+      user = getValue(a, '/', 0);
+      pass = getValue(a, '/', 1);
+      //pass.remove(11);
+      Serial.println("User");
+      Serial.println(user);
+      Serial.println("Pass");
+      Serial.println(pass);
+      WiFi.begin(user, pass); //Conexión a la red
+      delay(3000);
+      server.begin(); //Iniciamos el servidor
+      Serial.println(WiFi.localIP()); //Obtenemos la IP
+      delay(3000);
      }
+     Wire.beginTransmission(8); /* begin with device address 8 */
+     Wire.write(0);  /* sends hello string */
+     Wire.endTransmission();    /* stop transmitting */
+     Serial.println();
      server.begin();
      delay(3000);
   }
