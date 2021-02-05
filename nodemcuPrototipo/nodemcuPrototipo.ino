@@ -19,10 +19,10 @@ void loop() {
   if (client) //Si hay un cliente presente
   { 
     Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
-    String a = "";
+    String aa = "";
     while(Wire.available()){
-      char c = Wire.read();
-      a += c;
+      char cc = Wire.read();
+      aa += cc;
     }
     Serial.println("Nuevo Cliente");
     

@@ -55,7 +55,6 @@ RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 
 //Boton GuardarWifi
 NexButton buttonP0Configuracion1 = NexButton(1, 5, "b0");
-NexButton buttonOlvidar = NexButton(1, 7, "b2");
 NexText textUser = NexText(1, 1, "ssid");
 NexText TextPass = NexText(1, 2, "passw");
 char buffer[10] = {0};
@@ -63,7 +62,6 @@ char buffer[10] = {0};
 NexTouch *nex_listen_list[] =
 {
   &buttonP0Configuracion1,
-  &buttonOlvidar,
   NULL
 };
 
@@ -73,14 +71,12 @@ void buttonP0PagPrinConf1(void *ptr){
   char PassCh[12];
   textUser.getText(userCh, 10);
   TextPass.getText(PassCh, 12);
+  user = "";
+  pass = "";
   Serial.print(userCh);
-  user = userCh;
+  user += userCh;
   Serial.print(PassCh);
-  pass = PassCh;
-}
-
-void buttonOlvidarfunc(void *ptr){
-  WifiOlvidar = "0";
+  pass += PassCh;
 }
 
 void setup() {
@@ -95,7 +91,6 @@ void setup() {
  Wire.onRequest(requestEvent); /* register request event */
  
  buttonP0Configuracion1.attachPush(buttonP0PagPrinConf1);
- buttonOlvidar.attachPush(buttonOlvidarfunc); 
 }
 
 void loop() {
