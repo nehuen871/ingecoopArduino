@@ -18,7 +18,7 @@ void loop() {
   WiFiClient client = server.available();
   if (client) //Si hay un cliente presente
   { 
-    Wire.requestFrom(8, 24); /* request & read data of size 13 from slave */
+    Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
     String a = "";
     while(Wire.available()){
       char c = Wire.read();
@@ -97,12 +97,13 @@ void loop() {
       Wire.endTransmission();    /* stop transmitting */
       Serial.println();
       delay(500);
-      Wire.requestFrom(8, 24); /* request & read data of size 13 from slave */
+      Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
       String a = "";
       while(Wire.available()){
         char c = Wire.read();
         a += c;
       }
+      Serial.println(a);
       user = getValue(a, '/', 0);
       pass = getValue(a, '/', 1);
       //pass.remove(11);

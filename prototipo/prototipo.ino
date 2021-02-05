@@ -1,9 +1,9 @@
 #include <Nextion.h>
-#include <EEPROM.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <DHT.h>
-#define MaxCharsEnviados 50
+#include <EEPROM.h>
+
 
 // Definimos el pin digital donde se conecta el sensor
 #define DHTPIN 2
@@ -16,25 +16,20 @@
 #define diraccionMemoria4 3
 int in1 = A0;
 int in11 = A1;
-String ssid;
-String password;
-String separador = "/";
-String response;
+int MaxCharsEnviados = 50;
+String response = "";
 int number46 = 0;
-struct ResponseSend{
-  String ssid;
-  String pass;
-  String WifiOlvidar;
-  String Valvula1;
-  String Valvula2;
-  String Valvula3;
-  String FinalDeCarrera;
-  String Hora;
-  String Minuto;
-  String Segundo;
-  String Porcentaje;
-};
-
+String user;
+String pass;
+String WifiOlvidar;
+String Valvula1;
+String Valvula2;
+String Valvula3;
+String FinalDeCarrera;
+String Hora;
+String Minuto;
+String Segundo;
+String Porcentaje;
 struct HumTemp{
   float temp;
   float hum;
@@ -54,15 +49,13 @@ int ventilador2 = 5;
 int resistencia1 = 6;
 int resistencia2 = 7;
 
-ResponseSend *CharsEnviar;
-
 // Inicializamos el sensor DHT11
 DHT dht(DHTPIN, DHTTYPE);
 RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 
 //Boton GuardarWifi
 NexButton buttonP0Configuracion1 = NexButton(1, 5, "b0");
-NexButton buttonP0ConfiguracionOlvidar = NexButton(1, 8, "b2");
+NexButton buttonOlvidar = NexButton(1, 7, "b2");
 NexText textUser = NexText(1, 1, "ssid");
 NexText TextPass = NexText(1, 2, "passw");
 char buffer[10] = {0};
@@ -70,28 +63,24 @@ char buffer[10] = {0};
 NexTouch *nex_listen_list[] =
 {
   &buttonP0Configuracion1,
-  &buttonP0ConfiguracionOlvidar,
+  &buttonOlvidar,
   NULL
 };
 
 //Funcion guardar Wifi
 void buttonP0PagPrinConf1(void *ptr){
-  char userCh[8];
+  char userCh[10];
   char PassCh[12];
-  for(int i=0;i<8;i++){
-    userCh[i] = 0;
-  }
-  for(int a=0;a<13;a++){
-    PassCh[a] = 0;
-  }
-  textUser.getText(userCh, 8);
+  textUser.getText(userCh, 10);
   TextPass.getText(PassCh, 12);
-  CharsEnviar->ssid = userCh;
-  CharsEnviar->pass = PassCh;
+  Serial.print(userCh);
+  user = userCh;
+  Serial.print(PassCh);
+  pass = PassCh;
 }
 
-void buttonP0PagPrinConfOlvidar(void *ptr){
-  CharsEnviar->WifiOlvidar = "0";
+void buttonOlvidarfunc(void *ptr){
+  WifiOlvidar = "0";
 }
 
 void setup() {
@@ -106,7 +95,7 @@ void setup() {
  Wire.onRequest(requestEvent); /* register request event */
  
  buttonP0Configuracion1.attachPush(buttonP0PagPrinConf1);
- buttonP0ConfiguracionOlvidar.attachPush(buttonP0PagPrinConfOlvidar); 
+ buttonOlvidar.attachPush(buttonOlvidarfunc); 
 }
 
 void loop() {
@@ -120,7 +109,7 @@ void receiveEvent(int howMany) {
     //Serial.print(c); 
      delay(1000);
     if(c != 0){
-      WifiOnOff(c);
+      //WifiOnOff(c);
     }
   }
  Serial.println();             /* to newline */
@@ -129,9 +118,9 @@ void receiveEvent(int howMany) {
 // function that executes whenever data is requested from master
 void requestEvent() {
   response = "";
-  response += CharsEnviar->ssid + "/";
-  response += CharsEnviar->pass + "/";
-  response += CharsEnviar->WifiOlvidar+ "/";
+  response += user + "/";
+  response += pass + "/";
+  response += WifiOlvidar+ "/";
   if(response.length() < MaxCharsEnviados){
     for(int i=response.length();i<MaxCharsEnviados;i++){
       response+="/"; 
@@ -139,6 +128,7 @@ void requestEvent() {
   }
   char resp[response.length()];
   response.toCharArray(resp,response.length()+1);
+  Serial.println(resp);
   Wire.write(resp);  /*send string on request */
 }
 
@@ -214,44 +204,44 @@ void senDataTanque(int numero){
 }
 void senDataValvula1(int onOff){
   if(onOff == 1){
-    CharsEnviar->Valvula1 = "1";
+    Valvula1 = "1";
     Serial.print("page2.p0.pic=12");
     Serial.write(0xff); 
   }else{
-    CharsEnviar->Valvula1 = "0";
+    Valvula1 = "0";
     Serial.print("page2.p0.pic=13");
     Serial.write(0xff); 
   }
 }
 void senDataValvula2(int onOff){
   if(onOff == 1){
-    CharsEnviar->Valvula2 = "1";
+    Valvula2 = "1";
     Serial.print("page2.p1.pic=12");
     Serial.write(0xff); 
   }else{
-    CharsEnviar->Valvula2 = "0";
+    Valvula2 = "0";
     Serial.print("page2.p1.pic=13");
     Serial.write(0xff); 
   }
 }
 void senDataValvula3(int onOff){
    if(onOff == 1){
-    CharsEnviar->Valvula3 = "1";
+    Valvula3 = "1";
     Serial.print("page2.p2.pic=12");
     Serial.write(0xff); 
   }else{
-    CharsEnviar->Valvula3 = "0";
+    Valvula3 = "0";
     Serial.print("page2.p2.pic=13");
     Serial.write(0xff); 
   }
 }
 void senDataFinalDeCarrera(int onOff){
    if(onOff == 1){
-    CharsEnviar->Valvula3 = "1";
+    Valvula3 = "1";
     Serial.print("page2.p5.pic=14");
     Serial.write(0xff); 
   }else{
-    CharsEnviar->Valvula3 = "0";
+    Valvula3 = "0";
     Serial.print("page2.p5.pic=15");
     Serial.write(0xff); 
   }
@@ -259,13 +249,13 @@ void senDataFinalDeCarrera(int onOff){
 
 void SendHorasMinsSegs(){
   Serial.print("page2.n1.val=");
-  Serial.print(CharsEnviar->Hora);
+  Serial.print(Hora);
   Serial.write(0xff);
   Serial.print("page2.n2.val=");
-  Serial.print(CharsEnviar->Minuto);
+  Serial.print(Minuto);
   Serial.write(0xff);
   Serial.print("page2.n3.val=");
-  Serial.print(CharsEnviar->Segundo);
+  Serial.print(Segundo);
   Serial.write(0xff);
 }
 
@@ -277,5 +267,4 @@ void WifiOnOff(int onOff){
     Serial.print("page1.p1.pic=8");
     Serial.write(0xff);
   }
-  
 }
