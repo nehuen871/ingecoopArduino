@@ -18,14 +18,7 @@ void loop() {
   WiFiClient client = server.available();
   if (client) //Si hay un cliente presente
   { 
-    Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
-    String aa = "";
-    while(Wire.available()){
-      char cc = Wire.read();
-      aa += cc;
-    }
-    Serial.println("Nuevo Cliente");
-    
+    Serial.println("Nuevo Cliente"); 
     //esperamos hasta que hayan datos disponibles
     while(!client.available()&&client.connected())
     {
@@ -61,6 +54,49 @@ void loop() {
     client.println("Content-Type: text/html");
     client.println("Connection: close");// La conexión se cierra después de finalizar de la respuesta
     client.println();
+    delay(1);
+    Serial.println("respuesta enviada");
+    Serial.println();
+
+  }else{
+    String user;
+    String pass;
+    WiFi.begin(user, pass); 
+    delay(3000);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+      
+      delay(500);
+       Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
+       String a = "";
+       while(Wire.available()){
+          char c = Wire.read();
+          a += c;
+       }
+       user = getValue(a, '/', 0);
+       pass = getValue(a, '/', 1);
+       //pass.remove(11);
+       Serial.println("User");
+       Serial.println(user);
+       Serial.println("Pass");
+       Serial.println(pass);
+       WiFi.begin(user, pass); //Conexión a la red
+       delay(3000);
+       server.begin(); //Iniciamos el servidor
+       Serial.println(WiFi.localIP()); //Obtenemos la IP
+       delay(3000);
+     }
+     server.begin();
+     delay(3000);
+  }
+      delay(500);
+       Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
+       String a = "";
+       while(Wire.available()){
+          char c = Wire.read();
+          a += c;
+       }
+     Serial.println(a);
     //Pagina html  para en el navegador
     client.println("<!DOCTYPE HTML>");
     client.println("<html>");
@@ -75,55 +111,6 @@ void loop() {
     client.println("</div>");
     client.println("</body>");
     client.println("</html>");
-    
-    delay(1);
-    Serial.println("respuesta enviada");
-    Serial.println();
-
-  }else{
-    int i=0;
-    String user;
-    String pass;
-    WiFi.begin(user, pass); 
-    delay(3000);
-    while (WiFi.status() != WL_CONNECTED)
-    {
-      i++;
-      if(i>5){
-        i=0;
-      }
-      Wire.beginTransmission(8); /* begin with device address 8 */
-      Wire.write(i);  /* sends hello string */
-      Wire.endTransmission();    /* stop transmitting */
-      Serial.println();
-      delay(500);
-      Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
-      String a = "";
-      while(Wire.available()){
-        char c = Wire.read();
-        a += c;
-      }
-      Serial.println(a);
-      user = getValue(a, '/', 0);
-      pass = getValue(a, '/', 1);
-      //pass.remove(11);
-      Serial.println("User");
-      Serial.println(user);
-      Serial.println("Pass");
-      Serial.println(pass);
-      WiFi.begin(user, pass); //Conexión a la red
-      delay(3000);
-      server.begin(); //Iniciamos el servidor
-      Serial.println(WiFi.localIP()); //Obtenemos la IP
-      delay(3000);
-     }
-     Wire.beginTransmission(8); /* begin with device address 8 */
-     Wire.write(0);  /* sends hello string */
-     Wire.endTransmission();    /* stop transmitting */
-     Serial.println();
-     server.begin();
-     delay(3000);
-  }
 }
 
 

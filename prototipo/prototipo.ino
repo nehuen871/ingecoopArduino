@@ -1,9 +1,8 @@
 #include <Nextion.h>
+#include <EEPROM.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <DHT.h>
-#include <EEPROM.h>
-
 
 // Definimos el pin digital donde se conecta el sensor
 #define DHTPIN 2
@@ -16,20 +15,11 @@
 #define diraccionMemoria4 3
 int in1 = A0;
 int in11 = A1;
-int MaxCharsEnviados = 50;
-String response = "";
+String ssid;
+String password;
+String separador = "/";
+String response;
 int number46 = 0;
-String user;
-String pass;
-String WifiOlvidar;
-String Valvula1;
-String Valvula2;
-String Valvula3;
-String FinalDeCarrera;
-String Hora;
-String Minuto;
-String Segundo;
-String Porcentaje;
 struct HumTemp{
   float temp;
   float hum;
@@ -48,7 +38,6 @@ int ventilador1 = 4;
 int ventilador2 = 5;
 int resistencia1 = 6;
 int resistencia2 = 7;
-
 // Inicializamos el sensor DHT11
 DHT dht(DHTPIN, DHTTYPE);
 RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
@@ -71,12 +60,15 @@ void buttonP0PagPrinConf1(void *ptr){
   char PassCh[12];
   textUser.getText(userCh, 10);
   TextPass.getText(PassCh, 12);
-  user = "";
-  pass = "";
-  Serial.print(userCh);
-  user += userCh;
-  Serial.print(PassCh);
-  pass += PassCh;
+  ssid = userCh;
+  password = PassCh;
+  response = "";
+  response += ssid + separador + password;
+  if(response.length() < 100){
+    for(int i=response.length();i<100;i++){
+      response+="/"; 
+    }
+  }
 }
 
 void setup() {
@@ -102,9 +94,13 @@ void receiveEvent(int howMany) {
  while (0 <Wire.available()) {
     int c = Wire.read();      /* receive byte as a character */
     //Serial.print(c); 
-     delay(1000);
+  delay(3000);
     if(c != 0){
-      //WifiOnOff(c);
+      digitalWrite(in1, HIGH);
+      digitalWrite(in11, HIGH);
+    }else{
+      digitalWrite(in1, LOW);
+      digitalWrite(in11, LOW);
     }
   }
  Serial.println();             /* to newline */
@@ -112,18 +108,8 @@ void receiveEvent(int howMany) {
 
 // function that executes whenever data is requested from master
 void requestEvent() {
-  response = "";
-  response += user + "/";
-  response += pass + "/";
-  response += WifiOlvidar+ "/";
-  if(response.length() < MaxCharsEnviados){
-    for(int i=response.length();i<MaxCharsEnviados;i++){
-      response+="/"; 
-    }
-  }
   char resp[response.length()];
   response.toCharArray(resp,response.length()+1);
-  Serial.println(resp);
   Wire.write(resp);  /*send string on request */
 }
 
@@ -184,7 +170,7 @@ void inicializarConfig(Configuracion vDat){
     vDat.Thora = 0;
     vDat.Tmin = 0;
 }
-
+/*
 void senDataTanque(int numero){
       int maxPrcentaje = 192;// es el tamaño de la imagen hasta que llena el tanque en px
       int TamTankeCapacidad = 100; //CM
@@ -262,4 +248,4 @@ void WifiOnOff(int onOff){
     Serial.print("page1.p1.pic=8");
     Serial.write(0xff);
   }
-}
+}*/
