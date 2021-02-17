@@ -1,151 +1,67 @@
-<!DOCTYPE html>
+client.println("<!DOCTYPE html>
 <html>
 <head>
 <style>
-    .rectanguloNegro{
-        width: 0; 
-        height: 0;
-        border-top: 250px solid black;
-        border-right:50px solid black;
-        border-bottom:00px solid black;
-        border-left:50px solid black;
-        position: relative;
-        top: -250px;
-    }
-    .rectanguloRojo{
-        width: 0; 
-        height: 0;
-        border-top: 250px solid red;
-        border-right:50px solid red;
-        border-bottom:00px solid red;
-        border-left:50px solid red;
-    }
-    .circulo{ 
-        position: relative; 
-        height: 30px; 
-        width: 30px; 
-        background-color: green; 
-        border-radius: 30px; 
-    }
-    .triangleTop{
-        width: 0; 
-        height: 0;
-        border-top: 1px solid black;
-        border-right:20px solid white;
-        border-bottom:20px solid orange;
-        border-left:20px solid white;
-    }
-    .triangleRight{
-        width: 0;
-        height: 0;
-        border-top: 20px solid white;
-        border-right: 0px solid white;
-        border-bottom: 20px solid white;
-        border-left: 20px solid orange;
-    }
-    .triangleLeft {
-        width: 0;
-        height: 0;
-        border-top: 20px solid white;
-        border-right: 20px solid orange;
-        border-bottom: 20px solid white;
-        border-left: 0px solid white;
-    }
-    .triangleButton{
-        width: 0; 
-        height: 0;
-        border-top: 20px solid orange;
-        border-right:20px solid white;
-        border-bottom:0px solid white;
-        border-left:20px solid white;
-    }
-    .valvula3{
-        display: inline-block;
-        position: relative;
-        top: 70px;
-    }
-    .valvula2{
-        display: inline-block;
-        position: relative;
-        left: 300px;
-    }
-    .valvula1{
-        display: inline-block;
-        position: relative;
-        left: 90px;
-    }
-    .finaldecarrera{
-        display: inline-block;
-        position: relative;
-        left: 60px;
-        top: 120px;
-    }
-    .tanque{
-        position: relative;
-        left: 185px;
-        top: 140px;;
-    }
-    .container{
-        width: 800px;
-        height: 600px;
-    }
-    .linaeCanvas{
-        position: absolute;
-    }
-    .tiempo{
-        position: absolute;
-        top: 140px;
-        left: 440px;
-    }
-    .dataTanque{
-        display: inline;
-        position: relative;
-        top: -236px;
-    }
+.rectanguloNegro{width: 0;         height: 0;        border-top: 250px solid black;        border-right:50px solid black;        border-bottom:00px solid black;        border-left:50px solid black;        position: relative;        top: -250px;    }
+.rectanguloRojo{width: 0;         height: 0;        border-top: 250px solid red;        border-right:50px solid red;        border-bottom:00px solid red;        border-left:50px solid red;}
+.circulo{position: relative; height: 30px; width: 30px; background-color: green;border-radius: 30px;}
+.triangleTop{width: 0; height: 0;border-top: 1px solid black;border-right:20px solid white;border-bottom:20px solid orange;border-left:20px solid white;}
+.triangleRight{width: 0;height: 0;border-top: 20px solid white;border-right: 0px solid white;border-bottom: 20px solid white;border-left: 20px solid orange;}
+.triangleLeft {width: 0;height: 0;border-top: 20px solid white;border-right: 20px solid orange;border-bottom: 20px solid white;border-left: 0px solid white;}
+.triangleButton{width: 0; height: 0;border-top: 20px solid orange;border-right:20px solid white;border-bottom:0px solid white;border-left:20px solid white;}
+.valvula3{display: inline-block;position: relative;top: 70px;}
+.valvula2{display: inline-block;position: relative;left: 300px;}
+.valvula1{display: inline-block;position: relative;left: 90px;}
+.finaldecarrera{display: inline-block;position: relative;left: 60px;top: 120px;}
+.tanque{position: relative;left: 185px;top: 140px;}
+.container{width: 800px;height: 600px;}
+.linaeCanvas{position: absolute;}
+.tiempo{position: absolute;top: 140px;left: 440px;}
+.dataTanque{display: inline;position: relative;top: -236px;}
 </style>
-
 <title>Page Title</title>
+<script src='https://code.jquery.com/jquery-3.5.1.slim.js' integrity='sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=' crossorigin='anonymous'></script>
 </head>
 <body>
 <div><h1>Ingecoop</h1></div>
-<div class="container">
-    <canvas id="linea" class="linaeCanvas"></canvas>
-    <div class="valvula1">
-        <div class="triangleButton"></div>
-        <div class="triangleTop"></div>
-    </div>
-    <div class="valvula2">
-        <div class="triangleButton"></div>
-        <div class="triangleTop"></div>
-    </div>
-    <div class="valvula3">
-        <div class="triangleButton"></div>
-        <div class="triangleTop"></div>
-    </div>
-    <div class="finaldecarrera">
-        <div class=" circulo"></div>
-    </div>
-    <div class="tanque">
-        <div class="tanqueLleno rectanguloRojo"></div>
-        <div class="tanqueVacio rectanguloNegro"></div>
-        <div class="dataTanque">
-            <span>%</span>
-        </div>
-    </div>
-    <div class="tiempo">
-        <span>24:60:60</span>
-    </div>
+<div class='container'>
+<canvas id='linea' class='linaeCanvas'></canvas>
+<div class='valvula1'>
+<div class='triangleButton'></div>
+<div class='triangleTop'></div>
 </div>
-
+<div class='valvula2'>
+<div class='triangleButton'></div>
+<div class='triangleTop'></div>
+</div>
+<div class='valvula3'>
+<div class='triangleButton'></div>
+<div class='triangleTop'></div>
+</div>
+<div class='finaldecarrera'>
+<div class='circulo'></div>
+</div>
+<div class='tanque'>
+<div class='tanqueLleno rectanguloRojo'></div>
+<div class='tanqueVacio rectanguloNegro'></div>
+<div class='dataTanque'>
+<span>%</span>
+</div>
+</div>
+<div class='tiempo'>
+<span>24:60:60</span>
+</div>
+</div>
 </body>
 <script>
-    var canvas = document.getElementById("linea");
-    var ctx = canvas.getContext("2d");
-    canvas.width  = 800;
-    canvas.height = 600;
-    canvas.fillStyle = "#000";
-    ctx.fillRect(0, 20, 500, 1);
-    ctx.fillRect(0, 90, 206, 1);
-    ctx.fillRect(206, 20, 1, 200);
+var canvas = document.getElementById('linea');
+var ctx = canvas.getContext('2d');
+canvas.width  = 800;
+canvas.height = 600;
+canvas.fillStyle = '#000';
+ctx.fillRect(0, 20, 500, 1);
+ctx.fillRect(0, 90, 206, 1);
+ctx.fillRect(206, 20, 1, 200);
 </script>
 </html>
+<script>$(document).ready(function() {setInterval(function() {cache_clear()}, 1000);});function cache_clear(){window.location.reload(true);}</script>");
