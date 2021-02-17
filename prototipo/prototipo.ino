@@ -19,6 +19,7 @@ String ssid;
 String password;
 String separador = "/";
 String response;
+int WifiOnOffFlag = 0;
 int number46 = 0;
 struct HumTemp{
   float temp;
@@ -96,11 +97,13 @@ void receiveEvent(int howMany) {
     //Serial.print(c); 
   delay(3000);
     if(c != 0){
-      digitalWrite(in1, HIGH);
-      digitalWrite(in11, HIGH);
+      WifiOnOffFlag = 1;
+      //digitalWrite(in1, HIGH);
+      //digitalWrite(in11, HIGH);
     }else{
-      digitalWrite(in1, LOW);
-      digitalWrite(in11, LOW);
+      WifiOnOffFlag = 0;
+      //digitalWrite(in1, LOW);
+      //digitalWrite(in11, LOW);
     }
   }
  Serial.println();             /* to newline */
@@ -108,6 +111,10 @@ void receiveEvent(int howMany) {
 
 // function that executes whenever data is requested from master
 void requestEvent() {
+  if(WifiOnOffFlag == 1){
+    response = "";
+    response += "testestestestes";
+  }
   char resp[response.length()];
   response.toCharArray(resp,response.length()+1);
   Wire.write(resp);  /*send string on request */

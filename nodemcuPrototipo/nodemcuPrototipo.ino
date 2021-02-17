@@ -4,7 +4,7 @@
 char *ssid = "";
 char *password = "";
 WiFiServer server(80);
-
+int testC = 0;
 void setup() {
   Serial.begin(9600);
   delay(10);
@@ -17,46 +17,10 @@ void loop() {
   
   WiFiClient client = server.available();
   if (client) //Si hay un cliente presente
-  { 
-    Serial.println("Nuevo Cliente"); 
+  {
+    setWifiOnOff(1); 
     //esperamos hasta que hayan datos disponibles
-    while(!client.available()&&client.connected())
-    {
-    delay(1);
-    }
-    
-    // Leemos la primera línea de la petición del cliente.
-    String linea1 = client.readStringUntil('r');
-    Serial.println(linea1);
-
-    if (linea1.indexOf("LED=ON")>0) //Buscamos un LED=ON en la 1°Linea
-    {
-       Wire.beginTransmission(8); /* begin with device address 8 */
-       Wire.write(1);  /* sends hello string */
-       Wire.endTransmission();    /* stop transmitting */
-       Serial.println();
-      digitalWrite(2,HIGH);
-    }
-    if (linea1.indexOf("LED=OFF")>0)//Buscamos un LED=OFF en la 1°Linea
-    {
-       Wire.beginTransmission(8); /* begin with device address 8 */
-       Wire.write(0);  /* sends hello string */
-       Wire.endTransmission();    /* stop transmitting */
-       Serial.println();
-      digitalWrite(2,LOW);
-    }
-    
     client.flush(); 
-                
-    Serial.println("Enviando respuesta...");   
-    //Encabesado http    
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/html");
-    client.println("Connection: close");// La conexión se cierra después de finalizar de la respuesta
-    client.println();
-    delay(1);
-    Serial.println("respuesta enviada");
-    Serial.println();
 
   }else{
     String user;
@@ -67,6 +31,7 @@ void loop() {
     {
       
       delay(500);
+      setWifiOnOff(0);
        Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
        String a = "";
        while(Wire.available()){
@@ -87,21 +52,26 @@ void loop() {
        delay(3000);
      }
      server.begin();
+     setWifiOnOff(1);
      delay(3000);
   }
-      delay(500);
-       Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
-       String a = "";
-       while(Wire.available()){
-          char c = Wire.read();
-          a += c;
-       }
-     Serial.println(a);
+    Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
+    String ab = "";
+    while(Wire.available()){
+       char cc = Wire.read();
+       ab += cc;
+    }
+    testC++;
+    Serial.println(ab);
     //Pagina html  para en el navegador
     client.println("<!DOCTYPE HTML>");
     client.println("<html>");
+    client.println("<script src='https://code.jquery.com/jquery-3.5.1.slim.js' integrity='sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=' crossorigin='anonymous'></script>");
     client.println("<head><title>Naylam Mechatronics</title>");
     client.println("<body>");
+    client.println("<h1 align='center'>");
+    client.println(testC);
+    client.println("</h1>");
     client.println("<h1 align='center'>Test ESP8266</h1>");
     client.println("<div style='text-align:center;'>");
     client.println("<br />");            
@@ -110,6 +80,7 @@ void loop() {
     client.println("<br />");
     client.println("</div>");
     client.println("</body>");
+    client.println("<script>$(document).ready(function() {setInterval(function() {cache_clear()}, 1000);});function cache_clear(){window.location.reload(true);}</script>");
     client.println("</html>");
 }
 
@@ -129,4 +100,14 @@ void loop() {
   }
 
   return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+
+void setWifiOnOff(int a){
+  Wire.beginTransmission(8); /* begin with device address 8 */
+  if(a == 1){
+    Wire.write(1);  /* sends hello string */
+  }else{
+    Wire.write(0);  /* sends hello string */
+  }
+  Wire.endTransmission(); 
 }
