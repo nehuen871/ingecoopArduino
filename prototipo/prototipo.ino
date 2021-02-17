@@ -102,7 +102,7 @@ void buttonValvula0Func(void *ptr){
     if(digitalRead(finalCarrera) == HIGH){
       onOff0 = 0;
       digitalWrite(RELAY0, HIGH);
-      Serial.print("page2.p0.pic=12");
+      Serial.print("page2.p0.pic=13");
       Serial.print("\xFF\xFF\xFF");
     }else{
       onOff0 = 1;
@@ -111,7 +111,7 @@ void buttonValvula0Func(void *ptr){
   }else{
     onOff0 = 1;
     digitalWrite(RELAY0, LOW);
-    Serial.print("page2.p0.pic=13");
+    Serial.print("page2.p0.pic=12.");
     Serial.print("\xFF\xFF\xFF"); 
   }
 }
@@ -120,7 +120,7 @@ void buttonValvula1Func(void *ptr){
     if(digitalRead(finalCarrera) == HIGH){
       onOff1 = 0;
       digitalWrite(RELAY1, HIGH);
-      Serial.print("page2.p1.pic=12");
+      Serial.print("page2.p1.pic=13");
       Serial.print("\xFF\xFF\xFF");
     }else{
       onOff1 = 1;
@@ -129,7 +129,7 @@ void buttonValvula1Func(void *ptr){
   }else{
     onOff1 = 1;
     digitalWrite(RELAY1, LOW);
-    Serial.print("page2.p1.pic=13");
+    Serial.print("page2.p1.pic=12");
     Serial.print("\xFF\xFF\xFF");
   }
 }
@@ -138,7 +138,7 @@ void buttonValvula2Func(void *ptr){
     if(digitalRead(finalCarrera) == HIGH){
       onOff2 = 0;
       digitalWrite(RELAY2, HIGH);
-      Serial.print("page2.p2.pic=12");
+      Serial.print("page2.p2.pic=13");
       Serial.print("\xFF\xFF\xFF");
     }else{
       onOff2 = 1;
@@ -147,7 +147,7 @@ void buttonValvula2Func(void *ptr){
   }else{
     onOff2 = 1;
     digitalWrite(RELAY2, LOW);
-    Serial.print("page2.p2.pic=13");
+    Serial.print("page2.p2.pic=12");
     Serial.print("\xFF\xFF\xFF");
   }
 }
@@ -164,6 +164,9 @@ void setup() {
  pinMode(RELAY0, OUTPUT);
  pinMode(RELAY1, OUTPUT);
  pinMode(RELAY2, OUTPUT);
+ digitalWrite(RELAY0, LOW);
+ digitalWrite(RELAY1, LOW);
+ digitalWrite(RELAY2, LOW);
  Wire.begin(8);                /* join i2c bus with address 8 */
  Wire.onReceive(receiveEvent); /* register receive event */
  Wire.onRequest(requestEvent); /* register request event */
@@ -279,16 +282,47 @@ void inicializarConfig(Configuracion vDat){
 }
 
 void senDataTanque(int numero){
-      int maxPrcentaje = 192;// es el tamaño de la imagen hasta que llena el tanque en px
+      //int maxPrcentaje = 192;// es el tamaño de la imagen hasta que llena el tanque en px
       int TamTankeCapacidad = 100; //CM
       int lleno = TamTankeCapacidad - numero;
-      int porcentajeMostrar = (lleno * TamTankeCapacidad) / 100;
-      int porcentajeMostrarImagen = (porcentajeMostrar * maxPrcentaje) / 100;
-      Serial.print("page2.p4.h=");
-      Serial.print(porcentajeMostrar);
-      Serial.print("\xFF\xFF\xFF");
+      int porcentajeMostrar = (lleno * 100) / TamTankeCapacidad;
+      //int porcentajeMostrarImagen = (porcentajeMostrar * maxPrcentaje) / 100;
+      if(porcentajeMostrar > 10 && porcentajeMostrar < 20){
+        Serial.print("page2.p3.pic=16");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 20 && porcentajeMostrar < 30){
+        Serial.print("page2.p3.pic=17");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 30 && porcentajeMostrar < 40){
+        Serial.print("page2.p3.pic=18");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 40 && porcentajeMostrar < 50){
+        Serial.print("page2.p3.pic=29");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 50 && porcentajeMostrar < 60){
+        Serial.print("page2.p3.pic=20");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 60 && porcentajeMostrar < 70){
+        Serial.print("page2.p3.pic=21");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 70 && porcentajeMostrar < 80){
+        Serial.print("page2.p3.pic=22");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 80 && porcentajeMostrar < 90){
+        Serial.print("page2.p3.pic=23");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 90 && porcentajeMostrar < 98){
+        Serial.print("page2.p3.pic=23");
+        Serial.print("\xFF\xFF\xFF");
+      }else if(porcentajeMostrar > 98){
+        Serial.print("page2.p3.pic=10");
+        Serial.print("\xFF\xFF\xFF");
+      }else{
+        Serial.print("page2.p3.pic=10");
+        Serial.print("\xFF\xFF\xFF");
+      }
       Serial.print("page2.n0.val=");
-      Serial.print(porcentajeMostrarImagen);
+      Serial.print(porcentajeMostrar);
       Serial.print("\xFF\xFF\xFF");
 }
 
