@@ -1,13 +1,6 @@
 #include <Nextion.h>
-#include <EEPROM.h>
 #include <Wire.h>
 #include <RTClib.h>
-#include <DHT.h>
-
-// Definimos el pin digital donde se conecta el sensor
-#define DHTPIN 2
-// Dependiendo del tipo de sensor
-#define DHTTYPE DHT22 
 
 #define diraccionMemoria1 0
 #define diraccionMemoria2 1
@@ -35,25 +28,7 @@ int distance;
 int onOff0 = 0;
 int onOff1 = 0;
 int onOff2 = 0;
-struct HumTemp{
-  float temp;
-  float hum;
-};
 
-struct Configuracion{
-  int TempMax;
-  int TempMin;
-  int HuMax;
-  int HuMin;
-  int Thora;
-  int Tmin;
-};
-int ventilador1 = 4;
-int ventilador2 = 5;
-int resistencia1 = 6;
-int resistencia2 = 7;
-// Inicializamos el sensor DHT11
-DHT dht(DHTPIN, DHTTYPE);
 RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 
 //Boton GuardarWifi
@@ -90,8 +65,8 @@ void buttonP0PagPrinConf1(void *ptr){
   password = PassCh;
   response = "";
   response += ssid + separador + password + separador;
-  if(response.length() < 100){
-    for(int i=response.length();i<100;i++){
+  if(response.length() < 50){
+    for(int i=response.length();i<50;i++){
       response+="/"; 
     }
   }
@@ -180,14 +155,14 @@ void setup() {
 void loop() {
   nexLoop(nex_listen_list);
   delay(50);
-  //if(WifiOnOffFlag == 1){
+  if(WifiOnOffFlag == 1){
     delay(50);
     WifiOnOff(WifiOnOffFlag);
     SendHorasMinsSegs();
     hcsr04();
     senDataTanque(distance);
     finalCarreraGet();
-  //}
+  }
 }
 
 // function that executes whenever data is received from master
@@ -221,64 +196,6 @@ void requestEvent() {
   response.toCharArray(resp,response.length()+1);
   Serial.println(resp);
   Wire.write(resp);  /*send string on request */
-}
-
-
-void calcularTempYHumedad(HumTemp DatV){
-  // Wait a few seconds between measurements.
-  delay(2000);
-
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dht.readHumidity();
-  // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  //float f = dht.readTemperature(true);
-  DatV.temp = t;
-  DatV.hum = h;
-  // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) /*|| isnan(f)*/) {
-    Serial.println(F("Failed to read from DHT sensor!"));
-    return;
-  }
-
-  // Compute heat index in Fahrenheit (the default)
-  //float hif = dht.computeHeatIndex(f, h);
-  // Compute heat index in Celsius (isFahreheit = false)
-  //float hic = dht.computeHeatIndex(t, h, false);
-}
-
-void SetConfig(Configuracion vDat,int addres,int TempMaxS,int TempMinS,int HuMaxS,int HuMinS,int ThoraS,int TminS){
-    int eeAddress = addres * sizeof(Configuracion);
-    Serial.println( TempMaxS );
-    Serial.println( TempMinS );
-    Serial.println( HuMaxS );
-    Serial.println( HuMinS );
-    Serial.println( ThoraS );
-    Serial.println( TminS );
-    vDat.TempMax = TempMaxS;
-    vDat.TempMin = TempMinS;
-    vDat.HuMax = HuMaxS;
-    vDat.HuMin = HuMinS;
-    vDat.Thora = ThoraS;
-    vDat.Tmin = TminS;
-    EEPROM.put( eeAddress, vDat );   
-}
-
-Configuracion GetConfiguracion(int addres){
-    Configuracion customVar;
-    int eeAddress = addres * sizeof(Configuracion);
-    EEPROM.get( eeAddress, customVar );  
-    return customVar;
-}
-void inicializarConfig(Configuracion vDat){
-    vDat.TempMax = 0;
-    vDat.TempMin = 0;
-    vDat.HuMax = 0;
-    vDat.HuMin = 0;
-    vDat.Thora = 0;
-    vDat.Tmin = 0;
 }
 
 void senDataTanque(int numero){

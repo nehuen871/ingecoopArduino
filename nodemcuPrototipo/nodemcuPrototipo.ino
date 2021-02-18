@@ -32,12 +32,14 @@ void loop() {
       
       delay(500);
       setWifiOnOff(0);
-       Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
+       Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
        String a = "";
        while(Wire.available()){
           char c = Wire.read();
           a += c;
        }
+       Serial.println("resp");
+       Serial.println(a);
        user = getValue(a, '/', 0);
        pass = getValue(a, '/', 1);
        //pass.remove(11);
@@ -55,7 +57,7 @@ void loop() {
      setWifiOnOff(1);
      delay(3000);
   }
-    Wire.requestFrom(8, 100); /* request & read data of size 13 from slave */
+    Wire.requestFrom(8, 50); /* request & read data of size 13 from slave */
     String ab = "";
     while(Wire.available()){
        char cc = Wire.read();
