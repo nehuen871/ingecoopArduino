@@ -1,6 +1,6 @@
 #include <Nextion.h>
-#include <Wire.h>
 #include <RTClib.h>
+#include <Wire.h>
 
 #define diraccionMemoria1 0
 #define diraccionMemoria2 1
@@ -23,12 +23,13 @@ int number46 = 0;
 int Hora;
 int Minuto;
 int Segundo;
+int porcentajeMostrar = 0;
 long duration;
 int distance;
 int onOff0 = 0;
 int onOff1 = 0;
 int onOff2 = 0;
-
+int finalCarreraSend = 0;
 RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 
 //Boton GuardarWifi
@@ -60,16 +61,11 @@ void buttonP0PagPrinConf1(void *ptr){
     PassCh[i] = 0;
   }
   textUser.getText(userCh, 10);
+  Serial.print("\xFF\xFF\xFF");
   TextPass.getText(PassCh, 12);
+  Serial.print("\xFF\xFF\xFF");
   ssid = userCh;
   password = PassCh;
-  response = "";
-  response += ssid + separador + password + separador;
-  if(response.length() < 50){
-    for(int i=response.length();i<50;i++){
-      response+="/"; 
-    }
-  }
 }
 //FUNCTION VALVULAS
 void buttonValvula0Func(void *ptr){
@@ -82,11 +78,13 @@ void buttonValvula0Func(void *ptr){
     }else{
       onOff0 = 1;
       digitalWrite(RELAY0, LOW);
+      Serial.print("page2.p0.pic=12.");
+      Serial.print("\xFF\xFF\xFF"); 
     }
   }else{
     onOff0 = 1;
     digitalWrite(RELAY0, LOW);
-    Serial.print("page2.p0.pic=12.");
+    Serial.print("page2.p0.pic=12");
     Serial.print("\xFF\xFF\xFF"); 
   }
 }
@@ -100,6 +98,8 @@ void buttonValvula1Func(void *ptr){
     }else{
       onOff1 = 1;
       digitalWrite(RELAY1, LOW);
+      Serial.print("page2.p1.pic=12");
+      Serial.print("\xFF\xFF\xFF");
     }
   }else{
     onOff1 = 1;
@@ -118,6 +118,8 @@ void buttonValvula2Func(void *ptr){
     }else{
       onOff2 = 1;
       digitalWrite(RELAY2, LOW);
+      Serial.print("page2.p2.pic=12");
+      Serial.print("\xFF\xFF\xFF");
     }
   }else{
     onOff2 = 1;
@@ -154,9 +156,8 @@ void setup() {
 
 void loop() {
   nexLoop(nex_listen_list);
-  delay(50);
+  delay(1000);
   if(WifiOnOffFlag == 1){
-    delay(50);
     WifiOnOff(WifiOnOffFlag);
     SendHorasMinsSegs();
     hcsr04();
@@ -170,7 +171,7 @@ void receiveEvent(int howMany) {
  while (0 <Wire.available()) {
     int c = Wire.read();      /* receive byte as a character */
     //Serial.print(c); 
-  delay(3000);
+  delay(1000);
     if(c != 0){
       WifiOnOffFlag = 1;
       //digitalWrite(in1, HIGH);
@@ -190,7 +191,10 @@ void requestEvent() {
     String HoraString(Hora);
     String MinutoString(Minuto);
     String SegundoString(Segundo);
-    response += HoraString+"/"+MinutoString+"/"+SegundoString+"/"+distance;
+    response += HoraString+"/"+MinutoString+"/"+SegundoString+"/"+porcentajeMostrar+"/"+onOff0+"/"+onOff1+"/"+onOff2+"/"+finalCarreraSend;
+  }else{
+    response = "";
+    response += ssid + separador + password + separador;
   }
   char resp[response.length()];
   response.toCharArray(resp,response.length()+1);
@@ -202,7 +206,7 @@ void senDataTanque(int numero){
       //int maxPrcentaje = 192;// es el tamaño de la imagen hasta que llena el tanque en px
       int TamTankeCapacidad = 100; //CM
       int lleno = TamTankeCapacidad - numero;
-      int porcentajeMostrar = (lleno * 100) / TamTankeCapacidad;
+      porcentajeMostrar = (lleno * 100) / TamTankeCapacidad;
       //int porcentajeMostrarImagen = (porcentajeMostrar * maxPrcentaje) / 100;
       if(porcentajeMostrar > 10 && porcentajeMostrar < 20){
         Serial.print("page2.p3.pic=16");
@@ -271,9 +275,23 @@ void finalCarreraGet(){
   if(digitalRead(finalCarrera) == LOW){
     Serial.print("page2.p5.pic=14");
     Serial.print("\xFF\xFF\xFF");
+    digitalWrite(RELAY2, LOW);
+    Serial.print("page2.p2.pic=12");
+    Serial.print("\xFF\xFF\xFF");
+    digitalWrite(RELAY1, LOW);
+    Serial.print("page2.p1.pic=12");
+    Serial.print("\xFF\xFF\xFF");
+    digitalWrite(RELAY0, LOW);
+    Serial.print("page2.p0.pic=12");
+    Serial.print("\xFF\xFF\xFF");
+    onOff0 = 0;
+    onOff1 = 0;
+    onOff2 = 0;
+    finalCarreraSend = 0;
   }else{
     Serial.print("page2.p5.pic=15");
     Serial.print("\xFF\xFF\xFF");
+    finalCarreraSend = 1;
   }
 }
 void hcsr04(){

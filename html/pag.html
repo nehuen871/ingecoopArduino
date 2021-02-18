@@ -27,29 +27,29 @@ client.println("<!DOCTYPE html>
 <div class='container'>
 <canvas id='linea' class='linaeCanvas'></canvas>
 <div class='valvula1'>
-<div class='triangleButton'></div>
-<div class='triangleTop'></div>
+<div class='triangleButton' style='border-top: 20px solid "+valv0S+";'></div>
+<div class='triangleTop' style='border-bottom:20px solid "+valv0S+";'></div>
 </div>
 <div class='valvula2'>
-<div class='triangleButton'></div>
-<div class='triangleTop'></div>
+<div class='triangleButton' style='border-top: 20px solid "+valv1S+";'></div>
+<div class='triangleTop' style='border-bottom:20px solid "+valv1S+";'></div>
 </div>
 <div class='valvula3'>
-<div class='triangleButton'></div>
-<div class='triangleTop'></div>
+<div class='triangleButton' style='border-top: 20px solid "+valv2S+";'></div>
+<div class='triangleTop' style='border-bottom:20px solid "+valv2S+";'></div>
 </div>
 <div class='finaldecarrera'>
-<div class='circulo'></div>
+<div class='circulo' style='background-color: "+finalCarreraS+"'></div>
 </div>
 <div class='tanque'>
 <div class='tanqueLleno rectanguloRojo'></div>
 <div class='tanqueVacio rectanguloNegro'></div>
 <div class='dataTanque'>
-<span>%</span>
+<span>%"+pocentajeInt+"</span>
 </div>
 </div>
 <div class='tiempo'>
-<span>24:60:60</span>
+<span>"+hora+":"+mins+":"+seg+"</span>
 </div>
 </div>
 </body>
