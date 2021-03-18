@@ -62,13 +62,15 @@ void loop() {
        char cc = Wire.read();
        ab += cc;
     }
+    Serial.println(WiFi.localIP());
+    Serial.println(ab);
     String hora = getValue(ab, '/', 0);
     String mins = getValue(ab, '/', 1);
     String seg = getValue(ab, '/', 2);
     String porCent = getValue(ab, '/', 3);
-    String valv2 = getValue(ab, '/', 4);
+    String valv0 = getValue(ab, '/', 4);
     String valv1 = getValue(ab, '/', 5);
-    String valv0 = getValue(ab, '/', 6);
+    String valv2 = getValue(ab, '/', 6);
     String finalCarrera = getValue(ab, '/', 7);
     String valv2S;
     String valv1S;
@@ -76,17 +78,17 @@ void loop() {
     String finalCarreraS;
     int pocentajeInt = porCent.toInt();
     //Pagina html  para en el navegador
-    if(valv2.toInt() == 0){
+    if(valv2.toInt() == 1){
       valv2S = "red";
     }else{
       valv2S = "green";
     }
-    if(valv1.toInt() == 0){
+    if(valv1.toInt() == 1){
       valv1S = "red";
     }else{
       valv1S = "green";
     }
-    if(valv0.toInt() == 0){
+    if(valv0.toInt() == 1){
       valv0S = "red";
     }else{
       valv0S = "green";

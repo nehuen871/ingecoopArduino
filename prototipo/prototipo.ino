@@ -34,9 +34,9 @@ RTC_DS3231 rtc;     // crea objeto del tipo RTC_DS3231
 
 //Boton GuardarWifi
 NexButton buttonP0Configuracion1 = NexButton(1, 5, "b0");
-NexButton buttonValvula0 = NexButton(3, 18, "b1");
-NexButton buttonValvula1 = NexButton(3, 19, "b2");
-NexButton buttonValvula2 = NexButton(3, 20, "b3");
+NexButton buttonValvula0 = NexButton(3, 17, "b1");
+NexButton buttonValvula1 = NexButton(3, 18, "b2");
+NexButton buttonValvula2 = NexButton(3, 19, "b3");
 NexText textUser = NexText(1, 1, "ssid");
 NexText TextPass = NexText(1, 2, "passw");
 char buffer[10] = {0};
@@ -57,13 +57,15 @@ void buttonP0PagPrinConf1(void *ptr){
   for(int i = 0; i<10;i++){
     userCh[i] = 0;
   }
-  for(int i = 0; i<12;i++){
-    PassCh[i] = 0;
+  for(int a = 0; a<12;a++){
+    PassCh[a] = 0;
   }
   textUser.getText(userCh, 10);
   Serial.print("\xFF\xFF\xFF");
+  delay(10);
   TextPass.getText(PassCh, 12);
   Serial.print("\xFF\xFF\xFF");
+  delay(10);
   ssid = userCh;
   password = PassCh;
 }
@@ -208,6 +210,9 @@ void senDataTanque(int numero){
       int lleno = TamTankeCapacidad - numero;
       porcentajeMostrar = (lleno * 100) / TamTankeCapacidad;
       //int porcentajeMostrarImagen = (porcentajeMostrar * maxPrcentaje) / 100;
+      if(porcentajeMostrar > 100 || porcentajeMostrar < 0){
+        porcentajeMostrar = 100;
+      }
       if(porcentajeMostrar > 10 && porcentajeMostrar < 20){
         Serial.print("page2.p3.pic=16");
         Serial.print("\xFF\xFF\xFF");
