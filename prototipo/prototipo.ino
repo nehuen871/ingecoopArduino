@@ -71,63 +71,48 @@ void buttonP0PagPrinConf1(void *ptr){
 }
 //FUNCTION VALVULAS
 void buttonValvula0Func(void *ptr){
-  if(onOff0 == 1){
-    if(digitalRead(finalCarrera) == HIGH){
-      onOff0 = 0;
+  if(digitalRead(finalCarrera) == HIGH){
+    if(onOff0 == 0){
+      onOff0 = 1;
       digitalWrite(RELAY0, HIGH);
       Serial.print("page2.p0.pic=13");
       Serial.print("\xFF\xFF\xFF");
     }else{
-      onOff0 = 1;
+      onOff0 = 0;
       digitalWrite(RELAY0, LOW);
-      Serial.print("page2.p0.pic=12.");
+      Serial.print("page2.p0.pic=12");
       Serial.print("\xFF\xFF\xFF"); 
-    }
-  }else{
-    onOff0 = 1;
-    digitalWrite(RELAY0, LOW);
-    Serial.print("page2.p0.pic=12");
-    Serial.print("\xFF\xFF\xFF"); 
+    } 
   }
 }
 void buttonValvula1Func(void *ptr){
-  if(onOff1 == 1){
-    if(digitalRead(finalCarrera) == HIGH){
-      onOff1 = 0;
+  if(digitalRead(finalCarrera) == HIGH){
+    if(onOff1 == 0){
+      onOff1 = 1;
       digitalWrite(RELAY1, HIGH);
       Serial.print("page2.p1.pic=13");
       Serial.print("\xFF\xFF\xFF");
     }else{
-      onOff1 = 1;
+      onOff1 = 0;
       digitalWrite(RELAY1, LOW);
       Serial.print("page2.p1.pic=12");
       Serial.print("\xFF\xFF\xFF");
     }
-  }else{
-    onOff1 = 1;
-    digitalWrite(RELAY1, LOW);
-    Serial.print("page2.p1.pic=12");
-    Serial.print("\xFF\xFF\xFF");
   }
 }
 void buttonValvula2Func(void *ptr){
-   if(onOff2 == 1){
-    if(digitalRead(finalCarrera) == HIGH){
-      onOff2 = 0;
+  if(digitalRead(finalCarrera) == HIGH){
+    if(onOff2 == 0){
+      onOff2 = 1;
       digitalWrite(RELAY2, HIGH);
       Serial.print("page2.p2.pic=13");
       Serial.print("\xFF\xFF\xFF");
     }else{
-      onOff2 = 1;
+      onOff2 = 0;
       digitalWrite(RELAY2, LOW);
       Serial.print("page2.p2.pic=12");
       Serial.print("\xFF\xFF\xFF");
     }
-  }else{
-    onOff2 = 1;
-    digitalWrite(RELAY2, LOW);
-    Serial.print("page2.p2.pic=12");
-    Serial.print("\xFF\xFF\xFF");
   }
 }
 void setup() {
