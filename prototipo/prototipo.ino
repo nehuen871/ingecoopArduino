@@ -62,10 +62,12 @@ void buttonP0PagPrinConf1(void *ptr){
   }
   textUser.getText(userCh, 10);
   Serial.print("\xFF\xFF\xFF");
-  delay(10);
+  textUser.getText(userCh, 10);
+  Serial.print("\xFF\xFF\xFF");
   TextPass.getText(PassCh, 12);
   Serial.print("\xFF\xFF\xFF");
-  delay(10);
+  TextPass.getText(PassCh, 12);
+  Serial.print("\xFF\xFF\xFF");
   ssid = userCh;
   password = PassCh;
 }
@@ -155,11 +157,10 @@ void loop() {
 
 // function that executes whenever data is received from master
 void receiveEvent(int howMany) {
- while (0 <Wire.available()) {
+ while (0 < Wire.available()) {
     int c = Wire.read();      /* receive byte as a character */
-    //Serial.print(c); 
   delay(1000);
-    if(c != 0){
+    if(c == 1){
       WifiOnOffFlag = 1;
       //digitalWrite(in1, HIGH);
       //digitalWrite(in11, HIGH);
@@ -185,7 +186,7 @@ void requestEvent() {
   }
   char resp[response.length()];
   response.toCharArray(resp,response.length()+1);
-  Serial.println(resp);
+  //Serial.println(resp);
   Wire.write(resp);  /*send string on request */
 }
 

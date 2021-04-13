@@ -2,7 +2,7 @@ client.println("<!DOCTYPE html>
 <html>
 <head>
 <style>
-.rectanguloNegro{width: 0;         height: 0;        border-top: 0px solid black;        border-right:50px solid black;        border-bottom:00px solid black;        border-left:50px solid black;        position: relative;        top: -250px;    }
+.rectanguloNegro{width: 0;         height: 0;        border-top: 0px solid black;        border-right:50px solid black;        border-bottom:0px solid black;        border-left:50px solid black;        position: relative;        top: -250px;    }
 .rectanguloRojo{width: 0;         height: 0;        border-top: 250px solid red;        border-right:50px solid red;        border-bottom:00px solid red;        border-left:50px solid red;}
 .circulo{position: relative; height: 30px; width: 30px; background-color: green;border-radius: 30px;}
 .triangleTop{width: 0; height: 0;border-top: 0px solid white;border-right:20px solid orange;border-bottom:20px solid white;border-left:20px solid orange;}
@@ -27,16 +27,16 @@ client.println("<!DOCTYPE html>
 <div class='container'>
 <canvas id='linea' class='linaeCanvas'></canvas>
 <div class='valvula3'>
-<div class='triangleButton' style='border-top: 20px solid "+valv0S+";'></div>
-<div class='triangleTop' style='border-bottom:20px solid "+valv0S+";'></div>
+<div class='triangleButton' style='border-right: 20px solid "+valv0S+";border-left: 20px solid "+valv0S+";'></div>
+<div class='triangleTop' style='border-left:20px solid "+valv0S+";border-right: 20px solid "+valv0S+";'></div>
 </div>
 <div class='valvula1'>
-<div class='triangleButton' style='border-top: 20px solid "+valv1S+";'></div>
-<div class='triangleTop' style='border-bottom:20px solid "+valv1S+";'></div>
+<div class='triangleButton' style='border-right: 20px solid "+valv1S+";border-left: 20px solid "+valv1S+";'></div>
+<div class='triangleTop' style='border-left:20px solid "+valv1S+";border-right: 20px solid "+valv1S+";'></div>
 </div>
 <div class='valvula2'>
-<div class='triangleButton' style='border-top: 20px solid "+valv2S+";'></div>
-<div class='triangleTop' style='border-bottom:20px solid "+valv2S+";'></div>
+<div class='triangleButton' style='border-right: 20px solid "+valv2S+";border-left: 20px solid "+valv2S+";'></div>
+<div class='triangleTop' style='border-left:20px solid "+valv2S+";border-right: 20px solid "+valv2S+";'></div>
 </div>
 <div class='finaldecarrera'>
 <div class='circulo' style='background-color: "+finalCarreraS+"'></div>
